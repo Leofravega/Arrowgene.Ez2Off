@@ -9,13 +9,7 @@
 
         }
 
-        public int Id
-        {
-            get
-            {
-                return -1;
-            }
-        }
+        public int Id { get { return -1; } }
 
         public void Handle(EzClient client, EzPacket packet)
         {

@@ -48,6 +48,8 @@
     <Compile Include="EzHandler.cs" />
     <Compile Include="EzHandles\Blank.cs" />
     <Compile Include="EzHandles\Login.cs" />
+    <Compile Include="EzHandles\SelectMode.cs" />
+    <Compile Include="EzHandles\SelectServer.cs" />
     <Compile Include="EzLogPacket.cs" />
     <Compile Include="EzPacket.cs" />
     <Compile Include="EzPacketBuilder.cs" />

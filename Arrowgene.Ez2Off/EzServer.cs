@@ -53,6 +53,8 @@
         private void LoadHandles()
         {
             this.handle.AddHandler(new Login(this));
+            this.handle.AddHandler(new SelectMode(this));
+            this.handle.AddHandler(new SelectServer(this));
         }
 
         private void Svr_ServerReceivedPacket(object sender, ServerReceivedPacketEventArgs e)

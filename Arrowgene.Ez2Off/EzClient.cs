@@ -11,11 +11,13 @@
         {
             this.Socket = clientSocket;
             this.PacketBuilder = new EzPacketBuilder(logger);
+            this.Name = "Nothilvien";
         }
 
         public EzPacketBuilder PacketBuilder { get; private set; }
         public ClientSocket Socket { get; private set; }
         public int Id { get { return this.Socket.Id; } }
+        public string Name { get; set; }
 
         public void Send(EzPacket packet)
         {

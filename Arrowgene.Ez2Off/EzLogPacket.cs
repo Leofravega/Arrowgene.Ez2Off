@@ -10,12 +10,20 @@
             this.ClientId = client.Id;
             this.PacketType = packetType;
             this.TimeStamp = DateTime.UtcNow;
+
+            int size = (int)ezPacket.Data.Size;
+            this.Buffer = new ByteBuffer();
+            this.Buffer.WriteInt16(ezPacket.Id);
+            this.Buffer.WriteInt32(size);
+            this.Buffer.WriteByte(0);
+            this.Buffer.WriteBytes(ezPacket.Data.ReadBytes());
         }
+
 
         public EzLogPacketType PacketType { get; private set; }
         public int ClientId { get; private set; }
         public DateTime TimeStamp { get; private set; }
-        public int Size { get { return (int)this.Data.Size + EzPacket.HeaderSize; } }
-        public string Hex { get { return BitConverter.ToString(this.Data.ReadBytes()); } }
+        public string Hex { get { return BitConverter.ToString(this.Buffer.ReadBytes()); } }
+        public ByteBuffer Buffer { get; private set; }
     }
 }
