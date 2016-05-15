@@ -15,7 +15,7 @@
         public EzLogPacketType PacketType { get; private set; }
         public int ClientId { get; private set; }
         public DateTime TimeStamp { get; private set; }
-
+        public int Size { get { return (int)this.Data.Size + EzPacket.HeaderSize; } }
         public string Hex { get { return BitConverter.ToString(this.Data.ReadBytes()); } }
     }
 }

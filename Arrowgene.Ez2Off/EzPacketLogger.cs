@@ -32,6 +32,8 @@
             {
                 string fileName = "test";
                 string filePath = Path.Combine(this.StoragePath, fileName);
+
+                // Todo write to file
             }
         }
 

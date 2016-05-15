@@ -47,6 +47,8 @@
             }
             else
             {
+                // Todo verify if it handles splitted packets
+
                 long dataSize = this.currentPacketBuffer.Size + data.Size;
 
                 if (dataSize == this.currentDesiredSize)
@@ -57,7 +59,7 @@
                 }
                 else if (dataSize < this.currentDesiredSize)
                 {
-
+                    this.currentPacketBuffer.WriteBuffer(data);
                 }
                 else
                 {
@@ -72,7 +74,7 @@
         {
             ByteBuffer data = new ByteBuffer();
             int size = (int)packet.Data.Size;
-    
+
             data.WriteInt16(packet.Id);
             data.WriteInt32(size);
             data.WriteByte(0);
