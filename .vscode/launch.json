@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Arrowgene Ez2Off CLI",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/Arrowgene.Ez2Off.CLI/bin/Debug/netcoreapp2.0/Arrowgene.Ez2Off.CLI.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "justMyCode": false
+        }
+    ]
+}
