@@ -37,8 +37,8 @@
         public EzClientList Clients { get; private set; }
         public Logger Logger { get; private set; }
         public EzPacketLogger PacketLogger { get; private set; }
-
         public void Start()
+
         {
             this.LoadHandles();
             this.Logger.Write(string.Format("Loaded {0} handles", this.handle.HandlerCount));
@@ -55,6 +55,7 @@
             this.handle.AddHandler(new Login(this));
             this.handle.AddHandler(new SelectMode(this));
             this.handle.AddHandler(new SelectServer(this));
+            this.handle.AddHandler(new CreateAccount(this));
         }
 
         private void Svr_ServerReceivedPacket(object sender, ServerReceivedPacketEventArgs e)

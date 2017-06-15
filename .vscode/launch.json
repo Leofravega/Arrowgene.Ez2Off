@@ -10,8 +10,9 @@
             "args": [],
             "cwd": "${workspaceRoot}",
             "stopAtEntry": false,
-            "console": "internalConsole",
-            "justMyCode": false
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "externalConsole": true
         }
     ]
 }
