@@ -20,15 +20,18 @@ Arrowgene.Ez2Off
 Server Emulator for the Online Game Ez2On.
 
 
-Client
+Clients
 ===
 Thanks to a great effort we collected all ez2on clients from various publishers.
-You can find them here: mega.nz/#F!n88A1BjA!APvm7Sq9ILpcd3qZy-K4aQ
+You can find them here: [https://mega.nz/#F!n88A1BjA!APvm7Sq9ILpcd3qZy-K4aQ](https://mega.nz/#F!n88A1BjA!APvm7Sq9ILpcd3qZy-K4aQ)
 
 If you happen to have any files (Songs, Installer, Launcher (RetroLauncher.exe, etc.)) that are not currently in this repository please provide the files so we can complete the collection!
 
+Supported Client
+===
 The client that is compatible with this server is hosted here:
-Client Download: https://mega.nz/#!AF4TQJ5L!sHoa76UNDys1ZBxzy3wrNVrgwRDS9eZtcXXULkbrPAI
+[https://mega.nz/#!AF4TQJ5L!sHoa76UNDys1ZBxzy3wrNVrgwRDS9eZtcXXULkbrPAI](https://mega.nz/#!AF4TQJ5L!sHoa76UNDys1ZBxzy3wrNVrgwRDS9eZtcXXULkbrPAI)
+
 This is similar to the solista, and we are currently in the process of changing the focus to the 2nd 
 version of ez2on so this server can support the properly installed version ez2on, until we find 
 a way to start the 3rd version (see notice at top).
