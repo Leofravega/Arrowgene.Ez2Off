@@ -1,6 +1,18 @@
-IF YOU HAVE THE LATEST EZ2ON REBOOT CLIENT, PLEASE UPLOAD IT AND SEND THE LINK TO ME! THANK YOU ALOT!
+PLEASE HELP!
 ===
-I want to make a server for the latest version of ez2on reboot, but I dont have the client, please help to find it!
+
+IF YOU ARE A REVERSE ENGINEER, PLEASE HELP TO FIND A WAY TO START THE EXECUTABLE.  
+
+We would like to develop the server against the latest official client (ez2on reboot).
+The executable was packet with VMProtect 2.07 and we were able to unpack the executable,
+so it can be loaded into a debugger.  
+
+BUT we have not found out how to start the game or which parameters 
+it requires, we always get a message stating "Please start the game from the web".
+If you can find out how to correctly start this version of ez2on reboot, please let us know.
+For more details feel free to contact us or open an issue.
+
+Thanks alot!
 
 Arrowgene.Ez2Off
 ===
@@ -11,6 +23,12 @@ Client Download: https://mega.nz/#!AF4TQJ5L!sHoa76UNDys1ZBxzy3wrNVrgwRDS9eZtcXXU
 
 Running under OSX
 ===
+
+### Client
+Thanks to a great effort we collected all ez2on clients from various publishers.
+You can find them here: https://mega.nz/fm/mh9TlBZA
+
+If you happen to have any files (Songs, Installer, Launcher (RetroLauncher.exe, etc.)) that are not currently in this repository please provide the files so we can complete the collection!
 
 ### OSX - Server
 1) Ensure you have .NET Core 2.0 Preview 1 or higher
