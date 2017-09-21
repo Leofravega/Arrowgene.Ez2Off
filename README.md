@@ -12,6 +12,12 @@ it requires, we always get a message stating "Please start the game from the web
 If you can find out how to correctly start this version of ez2on reboot, please let us know.
 For more details feel free to contact us or open an issue.
 
+For a quick look at the binaries, to see the message you can find them here:
+[https://mega.nz/#!OgcmzagY!srLTDB1aFxUEIjLz-2Pa9acRd8s0_H0ZBA7R_5XvfDM](https://mega.nz/#!OgcmzagY!srLTDB1aFxUEIjLz-2Pa9acRd8s0_H0ZBA7R_5XvfDM)
+
+But the executable will probably crash if you happen to start it correctly due to missing game files,
+you will probably need the whole client at that point. If you get there please let us know!
+
 Thanks alot!
 
 
