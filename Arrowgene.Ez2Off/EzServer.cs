@@ -2,7 +2,6 @@
 {
     using Arrowgene.Services.Common;
     using Arrowgene.Services.Logging;
-    using Arrowgene.Services.Network.TCP.Event;
     using Arrowgene.Services.Network.TCP.Server;
     using EzHandles;
     using System;
@@ -29,7 +28,7 @@
             this.port = port;
 
             this.server = new TCPServer(this.ip, this.port, this.Logger);
-            this.server.ServerReceivedPacket += Svr_ServerReceivedPacket;
+            this.server.ReceivedPacket += Svr_ReceivedPacket;
             this.server.ClientConnected += Svr_ClientConnected;
             this.server.ClientDisconnected += Svr_ClientDisconnected;
         }
@@ -58,7 +57,7 @@
             this.handle.AddHandler(new CreateAccount(this));
         }
 
-        private void Svr_ServerReceivedPacket(object sender, ServerReceivedPacketEventArgs e)
+        private void Svr_ReceivedPacket(object sender, ReceivedPacketEventArgs e)
         {
             EzClient client = this.Clients.GetClient(e.ClientSocket.Id);
             ByteBuffer data = e.Payload;

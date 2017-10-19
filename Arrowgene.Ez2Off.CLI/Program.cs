@@ -1,8 +1,10 @@
-﻿namespace Arrowgene.Ez2Off
+﻿
+namespace Arrowgene.Ez2Off
 {
-    using Services.Logging;
+    
     using System;
     using System.Net;
+    using Arrowgene.Services.Logging;
 
 
     public class Program
@@ -73,7 +75,7 @@
         private void PacketLogger_EzPacketLogged(object sender, EzPacketLoggedEventArgs e)
         {
             Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine(string.Format("[{0:HH:mm:ss}][Typ:{1}][Id:{2}][Len:{3}]{4}", e.Packet.TimeStamp, e.Packet.PacketType, e.Packet.Id, e.Packet.Buffer.Size, e.Packet.Hex));
+            Console.WriteLine(e.Packet.ToString());
             Console.ResetColor();
         }
 

@@ -13,6 +13,11 @@
 
         public void Handle(EzClient client, EzPacket packet)
         {
+            packet.Data.ReadByte();
+      
+            
+            
+            
             ByteBuffer response = new ByteBuffer();
             response.WriteByte(1);
             response.WriteByte(0);

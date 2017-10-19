@@ -1,4 +1,6 @@
-﻿namespace Arrowgene.Ez2Off.EzHandles
+﻿using System;
+
+namespace Arrowgene.Ez2Off.EzHandles
 {
     using Arrowgene.Services.Common;
 
@@ -19,11 +21,15 @@
 
             ByteBuffer response = new ByteBuffer();
 
-            response.WriteByte(1);
+            
+            response.WriteString(characterName);
 
+            response.WriteByte(0);
+        
 
             base.Send(client, 3, response);
 
         }
+                
     }
 }

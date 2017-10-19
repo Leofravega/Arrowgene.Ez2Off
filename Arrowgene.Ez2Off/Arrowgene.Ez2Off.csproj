@@ -3,15 +3,19 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Title>Arrowgene.Ez2Off</Title>
     <Company>Arrowgene</Company>
-    <Description></Description>
-    <Configuration></Configuration>
+    <Description>
+    </Description>
+    <Configuration>
+    </Configuration>
     <Product>Arrowgene.Ez2Off</Product>
     <Version>1.0.0.0</Version>
     <FileVersion>1.0.0.0</FileVersion>
     <Copyright>Copyright © 2017 Arrowgene</Copyright>
   </PropertyGroup>
+  <!-- <ItemGroup>
+  <PackageReference Include="Arrowgene.Services" Version="1.0.0" />
+  </ItemGroup> -->
   <ItemGroup>
-    <PackageReference Include="Arrowgene.Services" Version="1.0.0" />
+    <ProjectReference Include="..\..\Arrowgene.Services\Arrowgene.Services\Arrowgene.Services.csproj" />
   </ItemGroup>
-
 </Project>

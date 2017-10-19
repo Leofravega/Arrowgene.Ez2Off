@@ -14,4 +14,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Arrowgene.Ez2Off\Arrowgene.Ez2Off.csproj" />
   </ItemGroup>
+  <!-- <ItemGroup>
+ <PackageReference Include="Arrowgene.Services" Version="1.0.0" />
+ </ItemGroup> -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Arrowgene.Services\Arrowgene.Services\Arrowgene.Services.csproj" />
+  </ItemGroup>
 </Project>
