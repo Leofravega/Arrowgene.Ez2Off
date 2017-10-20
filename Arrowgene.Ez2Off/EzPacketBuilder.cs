@@ -1,4 +1,6 @@
-﻿namespace Arrowgene.Ez2Off
+﻿using Arrowgene.Services.Common.Buffers;
+
+namespace Arrowgene.Ez2Off
 {
     using Arrowgene.Services.Common;
     using Arrowgene.Services.Logging;
@@ -8,7 +10,7 @@
         private bool isFinished;
         private int currentDesiredSize;
         private int currentId;
-        private ByteBuffer currentPacketBuffer;
+        private IBuffer currentPacketBuffer;
         private Logger logger;
 
         public EzPacketBuilder(Logger logger)
@@ -17,12 +19,12 @@
             this.logger = logger;
         }
 
-        public EzPacket Process(ByteBuffer data)
+        public EzPacket Process(IBuffer data)
         {
             EzPacket packet = null;
             if (this.isFinished)
             {
-                data.ResetPosition();
+                data.SetPositionStart();
                 int id = data.ReadInt16();
                 int size = data.ReadInt32();
 
@@ -30,7 +32,7 @@
 
                 if (data.Size == desiredSize)
                 {
-                    ByteBuffer packetBuffer = data.ReadByteBuffer(EzPacket.HeaderSize, size);
+                    IBuffer packetBuffer = data.Clone(EzPacket.HeaderSize, size);
                     packet = new EzPacket(id, packetBuffer);
                 }
                 else if (data.Size < desiredSize)
@@ -54,7 +56,7 @@
                 if (dataSize == this.currentDesiredSize)
                 {
                     this.isFinished = true;
-                    ByteBuffer packetBuffer = this.currentPacketBuffer.ReadByteBuffer(EzPacket.HeaderSize, this.currentDesiredSize);
+                    IBuffer packetBuffer = this.currentPacketBuffer.Clone(EzPacket.HeaderSize, this.currentDesiredSize);
                     packet = new EzPacket(this.currentId, packetBuffer);
                 }
                 else if (dataSize < this.currentDesiredSize)
@@ -70,9 +72,9 @@
         }
 
 
-        public ByteBuffer Build(EzPacket packet)
+        public IBuffer Build(EzPacket packet)
         {
-            ByteBuffer data = new ByteBuffer();
+            IBuffer data = Provider.NewBuffer();
             int size = (int)packet.Data.Size;
 
             data.WriteInt16(packet.Id);

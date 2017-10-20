@@ -1,4 +1,6 @@
-﻿namespace Arrowgene.Ez2Off
+﻿using Arrowgene.Services.Common.Buffers;
+
+namespace Arrowgene.Ez2Off
 {
     using Arrowgene.Services.Common;
     using System.Collections.Generic;
@@ -30,13 +32,13 @@
             }
         }
 
-        protected void Send(EzClient client, int id, ByteBuffer data)
+        protected void Send(EzClient client, int id, IBuffer data)
         {
             EzPacket packet = new EzPacket(id, data);
             this.Send(client, packet);
         }
 
-        protected void Send(List<EzClient> clients, int id, ByteBuffer data)
+        protected void Send(List<EzClient> clients, int id, IBuffer data)
         {
             foreach (EzClient client in clients)
             {

@@ -1,4 +1,6 @@
-﻿namespace Arrowgene.Ez2Off
+﻿using Arrowgene.Services.Common.Buffers;
+
+namespace Arrowgene.Ez2Off
 {
     using Arrowgene.Services.Common;
     using Arrowgene.Services.Logging;
@@ -60,7 +62,7 @@
         private void Svr_ReceivedPacket(object sender, ReceivedPacketEventArgs e)
         {
             EzClient client = this.Clients.GetClient(e.ClientSocket.Id);
-            ByteBuffer data = e.Payload;
+            IBuffer data = e.Payload;
             this.handle.Received(client, data);
         }
 

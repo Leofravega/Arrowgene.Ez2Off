@@ -1,4 +1,6 @@
-﻿namespace Arrowgene.Ez2Off
+﻿using Arrowgene.Services.Common.Buffers;
+
+namespace Arrowgene.Ez2Off
 {
     using Arrowgene.Services.Common;
     using System.Collections.Generic;
@@ -30,7 +32,7 @@
             }
         }
 
-        public void Received(EzClient client, ByteBuffer data)
+        public void Received(EzClient client, IBuffer data)
         {
             EzPacket request = client.PacketBuilder.Process(data);
 
@@ -39,7 +41,7 @@
                 if (this.handler.ContainsKey(request.Id))
                 {
                     this.packetLogger.LogIncomingPacket(client, request);
-                    request.Data.ResetPosition();
+                    request.Data.SetPositionStart();
                     this.handler[request.Id].Handle(client, request);
                 }
                 else

@@ -1,4 +1,6 @@
-﻿namespace Arrowgene.Ez2Off.EzHandles
+﻿using Arrowgene.Services.Common.Buffers;
+
+namespace Arrowgene.Ez2Off.EzHandles
 {
     using Arrowgene.Services.Common;
 
@@ -15,7 +17,7 @@
         {
             int selectedServer = packet.Data.ReadByte();
 
-            ByteBuffer response = new ByteBuffer();
+            IBuffer response = Provider.NewBuffer();
 
             response.WriteByte(0x24);
             response.WriteByte(0x86);

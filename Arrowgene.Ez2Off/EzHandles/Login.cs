@@ -1,4 +1,6 @@
-﻿namespace Arrowgene.Ez2Off.EzHandles
+﻿using Arrowgene.Services.Common.Buffers;
+
+namespace Arrowgene.Ez2Off.EzHandles
 {
     using Arrowgene.Services.Common;
 
@@ -14,17 +16,17 @@
         public void Handle(EzClient client, EzPacket packet)
         {
             packet.Data.ReadByte();
-      
-            
-            
-            
-            ByteBuffer response = new ByteBuffer();
+
+
+
+
+            IBuffer response = Provider.NewBuffer();
             response.WriteByte(1);
             response.WriteByte(0);
             response.WriteByte(0);
             response.WriteByte(0x14);
 
-            ByteBuffer player = new ByteBuffer();
+            IBuffer player = Provider.NewBuffer();
             player.WriteByte(1);
             player.WriteString(client.Name);
             player.WriteByte(0);

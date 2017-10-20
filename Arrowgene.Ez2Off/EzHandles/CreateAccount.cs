@@ -2,7 +2,7 @@
 
 namespace Arrowgene.Ez2Off.EzHandles
 {
-    using Arrowgene.Services.Common;
+    using Arrowgene.Services.Common.Buffers;
 
     public class CreateAccount : EzHandler, IEzHandler
     {
@@ -15,11 +15,11 @@ namespace Arrowgene.Ez2Off.EzHandles
 
         public void Handle(EzClient client, EzPacket packet)
         {
-            string characterName = packet.Data.ReadZeroString();
+            string characterName = packet.Data.ReadCString();
 
             this.Server.Logger.Write(characterName);
 
-            ByteBuffer response = new ByteBuffer();
+            IBuffer response = Provider.NewBuffer();
 
             
             response.WriteString(characterName);

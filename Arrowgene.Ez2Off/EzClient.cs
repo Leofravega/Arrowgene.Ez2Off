@@ -1,4 +1,6 @@
-﻿namespace Arrowgene.Ez2Off
+﻿using Arrowgene.Services.Common.Buffers;
+
+namespace Arrowgene.Ez2Off
 {
     using Arrowgene.Services.Common;
     using Arrowgene.Services.Logging;
@@ -21,8 +23,8 @@
 
         public void Send(EzPacket packet)
         {
-            ByteBuffer data = this.PacketBuilder.Build(packet);
-            this.Socket.Send(data.ReadBytes());
+            IBuffer data = this.PacketBuilder.Build(packet);
+            this.Socket.Send(data.GetAllBytes());
         }
 
     }

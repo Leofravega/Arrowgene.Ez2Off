@@ -1,4 +1,6 @@
-﻿namespace Arrowgene.Ez2Off.EzHandles
+﻿using Arrowgene.Services.Common.Buffers;
+
+namespace Arrowgene.Ez2Off.EzHandles
 {
     using Arrowgene.Services.Common;
     using System;
@@ -25,7 +27,7 @@
             ModeType mode = (ModeType)packet.Data.ReadByte();
 
 
-            ByteBuffer response = new ByteBuffer();
+            IBuffer response = Provider.NewBuffer();
 
             response.WriteByte(0); 
 

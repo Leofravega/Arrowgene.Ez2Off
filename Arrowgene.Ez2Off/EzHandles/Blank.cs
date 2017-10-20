@@ -1,4 +1,6 @@
-﻿namespace Arrowgene.Ez2Off.EzHandles
+﻿using Arrowgene.Services.Common.Buffers;
+
+namespace Arrowgene.Ez2Off.EzHandles
 {
     using Arrowgene.Services.Common;
 
@@ -13,8 +15,7 @@
 
         public void Handle(EzClient client, EzPacket packet)
         {
-            //  ByteBuffer response = new ByteBuffer();
-
+             // IBuffer response = Provider.NewBuffer();
             //  base.Send(client, -1, response);
         }
     }

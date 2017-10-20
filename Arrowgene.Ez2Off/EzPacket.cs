@@ -1,4 +1,6 @@
-﻿namespace Arrowgene.Ez2Off
+﻿using Arrowgene.Services.Common.Buffers;
+
+namespace Arrowgene.Ez2Off
 {
     using Arrowgene.Services.Common;
 
@@ -6,13 +8,13 @@
     {
         public const int HeaderSize = 7;
 
-        public EzPacket(int id, ByteBuffer buffer)
+        public EzPacket(int id, IBuffer buffer)
         {
             this.Data = buffer;
             this.Id = id;
         }
 
-        public ByteBuffer Data { get; private set; }
+        public IBuffer Data { get; private set; }
         public int Id { get; private set; }
 
         
