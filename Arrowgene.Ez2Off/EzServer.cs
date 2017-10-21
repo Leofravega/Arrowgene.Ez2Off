@@ -57,6 +57,8 @@ namespace Arrowgene.Ez2Off
             this.handle.AddHandler(new SelectMode(this));
             this.handle.AddHandler(new SelectServer(this));
             this.handle.AddHandler(new CreateAccount(this));
+            this.handle.AddHandler(new Enter(this));
+            this.handle.AddHandler(new SinglePlay(this));
         }
 
         private void Svr_ReceivedPacket(object sender, ReceivedPacketEventArgs e)

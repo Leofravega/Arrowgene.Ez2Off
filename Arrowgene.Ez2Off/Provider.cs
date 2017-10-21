@@ -4,14 +4,15 @@ namespace Arrowgene.Ez2Off
 {
     public class Provider
     {
+        
         public static IBuffer NewBuffer()
         {
-            return new ByteBuffer();
+            return new BBuffer();
         }
         
         public static IBuffer NewBuffer(byte[] bytes)
         {
-            return new ByteBuffer(bytes);
+            return new BBuffer(bytes);
         }
     }
 }

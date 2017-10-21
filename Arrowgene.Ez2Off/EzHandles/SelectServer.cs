@@ -24,9 +24,11 @@ namespace Arrowgene.Ez2Off.EzHandles
             response.WriteString("127.000.00.001");
             response.WriteByte(0);
             response.WriteByte(0);
+            
             response.WriteByte(0x7);
+            
 
-            base.Send(client, 8, response);
+            base.Send(client, 7, response);
 
         }
     }
