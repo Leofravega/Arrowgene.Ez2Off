@@ -29,7 +29,7 @@ namespace Arrowgene.Ez2Off.Data
             while (data.Position < filePayloadStart)
             {
                 int index = data.Position;
-                byte[] chunk = data.ReadBytes(268);
+                byte[] chunk = data.ReadBytes(INDEX_BLOCK_SIZE);
                 IBuffer chunkData = new BBuffer(chunk);
                 EzEntry entry = new EzEntry(chunkData, index);
                 if (readEntries < fileIndexStart)
@@ -66,14 +66,12 @@ namespace Arrowgene.Ez2Off.Data
             List<EzEntry> folders = ReadIndex(data);
             foreach (EzEntry folder in folders)
             {
-
                 string[] parts = folder.Name.Split('\\');
                 string folderPath = "";
                 foreach (string part in parts)
                 {
                     folderPath = Path.Combine(folderPath, part);
                 }
-
                 string directoryPath = Path.Combine(destination, folderPath);
                 Directory.CreateDirectory(directoryPath);
                 foreach (EzEntry file in folder.Entries)
