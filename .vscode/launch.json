@@ -2,12 +2,44 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Arrowgene Ez2Off CLI",
+            "name": "Ez2Off CLI",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceRoot}/Arrowgene.Ez2Off.CLI/bin/Debug/netcoreapp2.0/Arrowgene.Ez2Off.CLI.dll",
             "args": [],
+            "cwd": "${workspaceRoot}",
+            "stopAtEntry": false,
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "externalConsole": true
+        },
+        {
+            "name": "Ez2Off Server",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/Arrowgene.Ez2Off.CLI/bin/Debug/netcoreapp2.0/Arrowgene.Ez2Off.CLI.dll",
+            "args": [
+                "server"
+            ],
+            "cwd": "${workspaceRoot}",
+            "stopAtEntry": false,
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "externalConsole": true
+        },
+        {
+            "name": "Ez2Off Data",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/Arrowgene.Ez2Off.CLI/bin/Debug/netcoreapp2.0/Arrowgene.Ez2Off.CLI.dll",
+            "args": [
+                "data",
+                "/Users/heinz/.wine/drive_c/EzData.TRO",
+                "/Users/heinz/.wine/drive_c/EzData"
+            ],
             "cwd": "${workspaceRoot}",
             "stopAtEntry": false,
             "console": "integratedTerminal",
