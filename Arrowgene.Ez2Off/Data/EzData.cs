@@ -11,7 +11,6 @@ namespace Arrowgene.Ez2Off.Data
 
         public EzData()
         {
-
         }
 
         public List<EzEntry> ReadIndex(IBuffer data)
@@ -76,9 +75,24 @@ namespace Arrowgene.Ez2Off.Data
                 Directory.CreateDirectory(directoryPath);
                 foreach (EzEntry file in folder.Entries)
                 {
-                        byte[] payload = data.GetBytes(file.Offset, file.Length);
-                        string filePath = Path.Combine(directoryPath, file.Name);
-                        WriteFile(payload, filePath);
+                    string filePath = Path.Combine(directoryPath, file.Name);
+                    int offset = file.Offset;
+                    int lenght = file.Length;
+                    if (Path.HasExtension(filePath))
+                    {
+                        string ext = Path.GetExtension(filePath);
+                        switch (ext)
+                        {
+                            case ".pts":
+                                // PTS-Files are PNG files with the first 4byte beeing lengt of the data.
+                                // We already know the length from the index.
+                                offset += 4;
+                                lenght -= 4;
+                                break;
+                        }
+                    }
+                    byte[] payload = data.GetBytes(offset, lenght);
+                    WriteFile(payload, filePath);
                 }
             }
         }
@@ -92,6 +106,5 @@ namespace Arrowgene.Ez2Off.Data
         {
             File.WriteAllBytes(destination, content);
         }
-
     }
 }

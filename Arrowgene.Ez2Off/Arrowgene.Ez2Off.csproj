@@ -8,6 +8,6 @@
         <Copyright>Copyright © 2017 Arrowgene</Copyright>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Arrowgene.Services" Version="1.2.2"/>
+        <PackageReference Include="Arrowgene.Services" Version="1.2.3"/>
     </ItemGroup>
 </Project>
