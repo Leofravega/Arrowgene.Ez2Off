@@ -38,17 +38,12 @@ Supported Client
 The client that is compatible with this server is hosted here:
 [https://mega.nz/#!AF4TQJ5L!sHoa76UNDys1ZBxzy3wrNVrgwRDS9eZtcXXULkbrPAI](https://mega.nz/#!AF4TQJ5L!sHoa76UNDys1ZBxzy3wrNVrgwRDS9eZtcXXULkbrPAI)
 
-This is similar to the solista, and we are currently in the process of changing the focus to the 2nd 
-version of ez2on so this server can support the properly installed version ez2on, until we find 
-a way to start the 3rd version (see notice at top).
-
 Running under OSX
 ===
 
 ### OSX - Server
-1) Ensure you have .NET Core 2.0 Preview 1 or higher
-- [Download Page](https://www.microsoft.com/net/core/preview#macos)
-- [Direct Download .dmg](https://go.microsoft.com/fwlink/?linkid=848729)
+1) Ensure you have .NET Core 2.0 or higher
+- [https://www.microsoft.com/net/download/macos](https://www.microsoft.com/net/download/macos)
 
 2) Clone the project:
 ```
@@ -103,8 +98,8 @@ Running under Windows
 ===
 
 ### Windows - Server
-1) Ensure you have .NET Core 2.0 Preview 1 or higher  
-[https://www.microsoft.com/net/core#windowsvs2017](https://www.microsoft.com/net/core#windowsvs2017)
+1) Ensure you have .NET Core 2.0 or higher 
+[https://www.microsoft.com/net/download/windows](https://www.microsoft.com/net/download/windows)
 
 2) Clone the project:
 ```
