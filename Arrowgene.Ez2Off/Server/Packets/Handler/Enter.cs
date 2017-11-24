@@ -1,38 +1,29 @@
-﻿using Arrowgene.Services.Common.Buffers;
+﻿using Arrowgene.Ez2Off.Server.Client;
+using Arrowgene.Services.Buffers;
 
-namespace Arrowgene.Ez2Off.EzHandles
+namespace Arrowgene.Ez2Off.Server.Packets.Handler
 {
-    using Arrowgene.Services.Common;
-    using System;
-
-    public class Enter : EzHandler, IEzHandler
+    public class Enter : EzHandler
     {
-
         public Enter(EzServer server) : base(server)
         {
         }
 
-        public int Id
-        {
-            get { return 1; }
-        }
+        public override int Id => 1;
 
-        public void Handle(EzClient client, EzPacket packet)
+        public override void Handle(EzClient client, EzPacket packet)
         {
             packet.Data.ReadByte();
-
             IBuffer response = Provider.NewBuffer();
             response.WriteByte(1);
             response.WriteByte(0);
             response.WriteByte(0x10);
             response.WriteByte(0);
-
             response.WriteByte(0);
             response.WriteByte(0);
             response.WriteByte(0);
             response.WriteByte(0);
-
-            base.Send(client, 1, response);
+            Send(client, 1, response);
         }
     }
 }

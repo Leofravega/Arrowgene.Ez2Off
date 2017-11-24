@@ -1,9 +1,8 @@
+using System.Collections.Generic;
+using Arrowgene.Services.Buffers;
+
 namespace Arrowgene.Ez2Off.Data
 {
-    using System.Collections.Generic;
-    using System.IO;
-    using Arrowgene.Services.Common.Buffers;
-
     public class EzEntry
     {
         private IBuffer _data;

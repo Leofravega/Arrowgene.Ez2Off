@@ -7,12 +7,9 @@
         <Product>Arrowgene.Ez2Off.CLI</Product>
         <Version>1.0.0</Version>
         <Copyright>Copyright © 2017 Arrowgene</Copyright>
-        <StartupObject>Arrowgene.Ez2Off.Program</StartupObject>
+        <StartupObject>Arrowgene.Ez2Off.CLI.Program</StartupObject>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\Arrowgene.Ez2Off\Arrowgene.Ez2Off.csproj"/>
-    </ItemGroup>
-    <ItemGroup>
-        <PackageReference Include="Arrowgene.Services" Version="1.2.3"/>
     </ItemGroup>
 </Project>

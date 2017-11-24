@@ -1,10 +1,9 @@
+using System.Collections.Generic;
+using System.IO;
+using Arrowgene.Services.Buffers;
+
 namespace Arrowgene.Ez2Off.Data
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using Arrowgene.Services.Common.Buffers;
-
     public class EzData
     {
         private const int INDEX_BLOCK_SIZE = 268;
@@ -29,7 +28,7 @@ namespace Arrowgene.Ez2Off.Data
             {
                 int index = data.Position;
                 byte[] chunk = data.ReadBytes(INDEX_BLOCK_SIZE);
-                IBuffer chunkData = new BBuffer(chunk);
+                IBuffer chunkData = new ArrayBuffer(chunk);
                 EzEntry entry = new EzEntry(chunkData, index);
                 if (readEntries < fileIndexStart)
                 {
@@ -60,7 +59,7 @@ namespace Arrowgene.Ez2Off.Data
         public void Extract(string source, string destination)
         {
             byte[] content = ReadFile(source);
-            IBuffer data = new BBuffer(content);
+            IBuffer data = new ArrayBuffer(content);
 
             List<EzEntry> folders = ReadIndex(data);
             foreach (EzEntry folder in folders)

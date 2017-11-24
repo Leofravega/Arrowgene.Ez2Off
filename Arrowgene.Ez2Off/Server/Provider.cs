@@ -1,18 +1,25 @@
-﻿using Arrowgene.Services.Common.Buffers;
+﻿using Arrowgene.Ez2Off.Server.Log;
+using Arrowgene.Services.Buffers;
 
-namespace Arrowgene.Ez2Off
+namespace Arrowgene.Ez2Off.Server
 {
-    public class Provider
+    public static class Provider
     {
-        
+        private static readonly EzPacketLogger PacketLogger = new EzPacketLogger();
+
         public static IBuffer NewBuffer()
         {
-            return new BBuffer();
+            return new ArrayBuffer();
         }
-        
+
         public static IBuffer NewBuffer(byte[] bytes)
         {
-            return new BBuffer(bytes);
+            return new ArrayBuffer(bytes);
+        }
+
+        public static EzPacketLogger GetPacketLogger()
+        {
+            return PacketLogger;
         }
     }
 }

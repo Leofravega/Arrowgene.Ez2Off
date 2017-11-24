@@ -1,11 +1,9 @@
-﻿using Arrowgene.Services.Common.Buffers;
+﻿using Arrowgene.Ez2Off.Server.Client;
+using Arrowgene.Services.Buffers;
 
-namespace Arrowgene.Ez2Off.EzHandles
+namespace Arrowgene.Ez2Off.Server.Packets.Handler
 {
-    using Arrowgene.Services.Common;
-    using System;
-
-    public class SelectMode : EzHandler, IEzHandler
+    public class SelectMode : EzHandler
     {
         public enum ModeType
         {
@@ -14,22 +12,19 @@ namespace Arrowgene.Ez2Off.EzHandles
             ClubMix = 2
         }
 
-
         public SelectMode(EzServer server) : base(server)
         {
-
         }
 
-        public int Id { get { return 9; } }
+        public override int Id => 9;
 
-        public void Handle(EzClient client, EzPacket packet)
+        public override void Handle(EzClient client, EzPacket packet)
         {
-            ModeType mode = (ModeType)packet.Data.ReadByte();
-
+            ModeType mode = (ModeType) packet.Data.ReadByte();
 
             IBuffer response = Provider.NewBuffer();
 
-            response.WriteByte(0); 
+            response.WriteByte(0);
 
             response.WriteByte(2); // Active Channels 
             response.WriteByte(0);
@@ -37,8 +32,7 @@ namespace Arrowgene.Ez2Off.EzHandles
             response.WriteByte(0);
             response.WriteByte(0);
 
-
-            base.Send(client, 10, response);
+            Send(client, 10, response);
         }
     }
 }

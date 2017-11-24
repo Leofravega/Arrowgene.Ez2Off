@@ -1,26 +1,26 @@
-namespace Arrowgene.Ez2Off
-{
-    using System;
-    using System.Net;
-    using Arrowgene.Services.Logging;
+using System;
+using System.Net;
+using Arrowgene.Ez2Off.Server;
+using Arrowgene.Services.Logging;
 
+namespace Arrowgene.Ez2Off.CLI
+{
     public class ServerProgram
     {
-        public const int ExitCode_Ok = 0;
+        private const int ExitCodeOk = 0;
 
         public static int EntryPoint(string[] args)
         {
-            Console.Title = EzServer.Name;
+            LogProvider.LogWrite += LogProviderOnLogWrite;
+            Console.Title = "EzServer";
             IPAddress ip = IPAddress.Loopback;
             int port = 9350;
             bool readParams = false;
             if (args.Length >= 2)
             {
-                IPAddress tmpIp = null;
-                if (IPAddress.TryParse(args[0], out tmpIp))
+                if (IPAddress.TryParse(args[0], out IPAddress tmpIp))
                 {
-                    int tmpPort = -1;
-                    if (int.TryParse(args[1], out tmpPort))
+                    if (int.TryParse(args[1], out int tmpPort))
                     {
                         ip = tmpIp;
                         port = tmpPort;
@@ -38,35 +38,42 @@ namespace Arrowgene.Ez2Off
             return p.Run();
         }
 
+        private static void LogProviderOnLogWrite(object sender, LogWriteEventArgs logWriteEventArgs)
+        {
+            switch (logWriteEventArgs.Log.LogLevel)
+            {
+                case LogLevel.Debug:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case LogLevel.Info:
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    break;
+                case LogLevel.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+            }
+            if (logWriteEventArgs.Log.Zone == "EzPacketLogger")
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+            }
+            Console.WriteLine(logWriteEventArgs.Log);
+            Console.ResetColor();
+        }
+
         private EzServer server;
 
         public ServerProgram(IPAddress ip, int port)
         {
-            this.server = new EzServer(ip, port);
-            this.server.PacketLogger.EzPacketLogged += PacketLogger_EzPacketLogged;
-            this.server.Logger.LogWrite += Logger_LogWrite;
+            server = new EzServer(ip, port);
         }
 
-        public int Run()
+        private int Run()
         {
-            this.server.Start();
+            server.Start();
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
-            this.server.Stop();
-            this.server.PacketLogger.EzPacketLogged -= PacketLogger_EzPacketLogged;
-            return ServerProgram.ExitCode_Ok;
-        }
-
-        private void PacketLogger_EzPacketLogged(object sender, EzPacketLoggedEventArgs e)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine(e.Packet.ToString());
-            Console.ResetColor();
-        }
-
-        private void Logger_LogWrite(object sender, LogWriteEventArgs e)
-        {
-            Console.WriteLine(e.Log.Text);
+            server.Stop();
+            return ExitCodeOk;
         }
     }
 }

@@ -1,19 +1,17 @@
-﻿using Arrowgene.Services.Common.Buffers;
+﻿using Arrowgene.Ez2Off.Server.Client;
+using Arrowgene.Services.Buffers;
 
-namespace Arrowgene.Ez2Off.EzHandles
+namespace Arrowgene.Ez2Off.Server.Packets.Handler
 {
-    using Arrowgene.Services.Common;
-
-    public class SelectServer : EzHandler, IEzHandler
+    public class SelectServer : EzHandler
     {
         public SelectServer(EzServer server) : base(server)
         {
-
         }
 
-        public int Id { get { return 7; } }
+        public override int Id => 7;
 
-        public void Handle(EzClient client, EzPacket packet)
+        public override void Handle(EzClient client, EzPacket packet)
         {
             int selectedServer = packet.Data.ReadByte();
 
@@ -24,12 +22,11 @@ namespace Arrowgene.Ez2Off.EzHandles
             response.WriteString("127.000.00.001");
             response.WriteByte(0);
             response.WriteByte(0);
-            
+
             response.WriteByte(0x7);
-            
 
-            base.Send(client, 7, response);
 
+            Send(client, 7, response);
         }
     }
 }

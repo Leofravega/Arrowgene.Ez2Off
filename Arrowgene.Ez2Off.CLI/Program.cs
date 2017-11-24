@@ -1,4 +1,4 @@
-﻿namespace Arrowgene.Ez2Off
+﻿namespace Arrowgene.Ez2Off.CLI
 {
     using System;
 

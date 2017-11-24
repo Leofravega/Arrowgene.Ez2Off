@@ -1,83 +1,99 @@
-﻿using Arrowgene.Services.Common.Buffers;
+﻿using System.Collections.Generic;
+using System.Net;
+using Arrowgene.Ez2Off.Server.Client;
+using Arrowgene.Ez2Off.Server.Packets;
+using Arrowgene.Ez2Off.Server.Packets.Handler;
+using Arrowgene.Services.Logging;
+using Arrowgene.Services.Network.Tcp.Server;
+using Arrowgene.Services.Network.Tcp.Server.AsyncEvent;
+using Arrowgene.Services.Network.Tcp.Server.EventConsumer.EventHandler;
 
-namespace Arrowgene.Ez2Off
+namespace Arrowgene.Ez2Off.Server
 {
-    using Arrowgene.Services.Common;
-    using Arrowgene.Services.Logging;
-    using Arrowgene.Services.Network.TCP.Server;
-    using EzHandles;
-    using System;
-    using System.Net;
-
     public class EzServer
     {
-        public const string Name = "Ez2Off";
-
-        private EzHandle handle;
-        private TCPServer server;
-        private IPAddress ip;
-        private int port;
+        private readonly ITcpServer _server;
+        private readonly Dictionary<int, EzHandler> _handlers;
+        private ILogger _logger;
 
         public EzServer(IPAddress ip, int port)
         {
-            this.Logger = new Logger(Name);
-            this.Clients = new EzClientList();
-            this.PacketLogger = new EzPacketLogger();
-            this.handle = new EzHandle(this, this.PacketLogger);
+            _logger = LogProvider.GetLogger(this);
 
+            EventHandlerConsumer consumer = new EventHandlerConsumer();
+            consumer.ReceivedPacket += Svr_ReceivedPacket;
+            consumer.ClientConnected += Svr_ClientConnected;
+            consumer.ClientDisconnected += Svr_ClientDisconnected;
 
-            this.ip = ip;
-            this.port = port;
+            _server = new AsyncEventServer(ip, port, consumer);
+            _handlers = new Dictionary<int, EzHandler>();
 
-            this.server = new TCPServer(this.ip, this.port, this.Logger);
-            this.server.ReceivedPacket += Svr_ReceivedPacket;
-            this.server.ClientConnected += Svr_ClientConnected;
-            this.server.ClientDisconnected += Svr_ClientDisconnected;
+            Clients = new EzClientList();
         }
 
-        public EzClientList Clients { get; private set; }
-        public Logger Logger { get; private set; }
-        public EzPacketLogger PacketLogger { get; private set; }
-        public void Start()
+        public EzClientList Clients { get; }
 
+        public void Start()
         {
-            this.LoadHandles();
-            this.Logger.Write(string.Format("Loaded {0} handles", this.handle.HandlerCount));
-            this.server.Start();
+            LoadHandles();
+            _logger.Info("Loaded {0} handles", _handlers.Count);
+            _server.Start();
         }
 
         public void Stop()
         {
-            this.server.Stop();
+            _server.Stop();
         }
 
         private void LoadHandles()
         {
-            this.handle.AddHandler(new Login(this));
-            this.handle.AddHandler(new SelectMode(this));
-            this.handle.AddHandler(new SelectServer(this));
-            this.handle.AddHandler(new CreateAccount(this));
-            this.handle.AddHandler(new Enter(this));
-            this.handle.AddHandler(new SinglePlay(this));
+            AddHandler(new Login(this));
+            AddHandler(new SelectMode(this));
+            AddHandler(new SelectServer(this));
+            AddHandler(new CreateAccount(this));
+            AddHandler(new Enter(this));
+            AddHandler(new SinglePlay(this));
         }
 
         private void Svr_ReceivedPacket(object sender, ReceivedPacketEventArgs e)
         {
-            EzClient client = this.Clients.GetClient(e.ClientSocket.Id);
-            IBuffer data = e.Payload;
-            this.handle.Received(client, data);
+            EzClient client = Clients.GetClient(e.Socket);
+            EzPacket packet = client.Read(e.Data);
+            if (packet != null)
+            {
+                if (_handlers.ContainsKey(packet.Id))
+                {
+                    //packetLogger.LogIncomingPacket(client, request);
+                    _handlers[packet.Id].Handle(client, packet);
+                }
+                else
+                {
+                    //packetLogger.LogUnknownOutgoingPacket(client, request);
+                }
+            }
         }
 
         private void Svr_ClientDisconnected(object sender, DisconnectedEventArgs e)
         {
-            this.Clients.RemoveClient(e.ClientSocket.Id);
+            Clients.RemoveClient(e.Socket);
         }
 
         private void Svr_ClientConnected(object sender, ConnectedEventArgs e)
         {
-            EzClient client = new EzClient(e.ClientSocket, this.Logger);
-            this.Clients.AddClient(client);
+            EzClient client = new EzClient(e.Socket);
+            Clients.AddClient(client);
         }
 
+        private void AddHandler(EzHandler handler)
+        {
+            if (_handlers.ContainsKey(handler.Id))
+            {
+                _handlers[handler.Id] = handler;
+            }
+            else
+            {
+                _handlers.Add(handler.Id, handler);
+            }
+        }
     }
 }
