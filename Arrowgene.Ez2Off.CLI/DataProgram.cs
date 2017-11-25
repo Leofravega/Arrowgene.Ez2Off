@@ -1,30 +1,51 @@
+using System;
+using Arrowgene.Ez2Off.Data.Hdr;
+
 namespace Arrowgene.Ez2Off.CLI
 {
-    using System;
-    using Arrowgene.Ez2Off.Data;
-
     public class DataProgram
     {
         public static int EntryPoint(string[] args)
         {
             Console.Title = "Ez2Off Data";
-            if (args.Length >= 2)
+            if (args.Length >= 3)
             {
-                DataProgram p = new DataProgram();
-                return p.Run(args[0], args[1]);
+                if (args[0] == "pack" || args[0] == "p")
+                {
+                    HdrFormat hdr = new HdrFormat();
+                    hdr.Pack(args[1], args[2]);
+                }
+                else if (args[0] == "extract" || args[0] == "e")
+                {
+                    HdrFormat hdr = new HdrFormat();
+                    hdr.Extract(args[1], args[2]);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid actions use 'p' or 'e' or 'pack' or 'extract'");
+                    Help();
+                    return 1;
+                }
             }
             else
             {
-                Console.WriteLine("Invalid parameter count provided, use 'data [source] [destination]' notation e.g. 'data /Users/name/EzData.tro /Users/name/EzData'");
+                Console.WriteLine("Invalid parameter count provided");
+                Help();
                 return 1;
             }
+            return 0;
         }
 
-        public int Run(string source, string destination)
+        public static void Help()
         {
-            EzData data = new EzData();
-            data.Extract(source, destination);
-            return 0;
+            Console.WriteLine(Environment.NewLine);
+            Console.WriteLine("Example Extract:");
+            Console.WriteLine("use following parameters: 'data e [source-file] [destination-folder]'");
+            Console.WriteLine("'data e /Users/name/EzData.tro /Users/name/EzData'");
+            Console.WriteLine(Environment.NewLine);
+            Console.WriteLine("Example Pack:");
+            Console.WriteLine("use following parameters: 'data p [source-folder] [destination-file]'");
+            Console.WriteLine("'data p /Users/name/DATA /Users/name/NewData.tro'");
         }
     }
 }
