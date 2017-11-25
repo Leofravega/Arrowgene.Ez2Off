@@ -34,19 +34,12 @@ namespace Arrowgene.Ez2Off.Data.Hdr
                 for (int j = 0; j < folderIndex.Length; j++)
                 {
                     HdrIndex fileIndex = ReadIndex(buffer);
-                    string[] parts = folderIndex.Name.Split('\\');
-                    string folderPath = "";
-                    foreach (string part in parts)
-                    {
-                        folderPath = Path.Combine(folderPath, part);
-                    }
-                    string fullPath = Path.Combine(folderPath, fileIndex.Name);
                     int offset = fileIndex.Offset;
                     int lenght = fileIndex.Length;
                     string ext;
-                    if (Path.HasExtension(fullPath))
+                    if (Path.HasExtension(fileIndex.Name))
                     {
-                        ext = Path.GetExtension(fullPath);
+                        ext = Path.GetExtension(fileIndex.Name);
                         switch (ext)
                         {
                             case ".pts":
@@ -62,10 +55,10 @@ namespace Arrowgene.Ez2Off.Data.Hdr
                         ext = "";
                     }
                     HdrFile file = new HdrFile();
-                    file.DirectoryPath = folderPath;
-                    file.FileName = fileIndex.Name;
-                    file.FullPath = fullPath;
                     file.FileExtension = ext;
+                    file.FileName = fileIndex.Name;
+                    file.HdrDirectoryPath = folderIndex.Name;
+                    file.HdrFullPath = folderIndex.Name + fileIndex.Name;
                     file.Data = buffer.GetBytes(offset, lenght);
                     files.Add(file);
                 }
@@ -78,13 +71,26 @@ namespace Arrowgene.Ez2Off.Data.Hdr
             Dictionary<string, List<HdrFile>> folderDictionary = new Dictionary<string, List<HdrFile>>();
             foreach (HdrFile file in archive.Files)
             {
-                if (folderDictionary.ContainsKey(file.DirectoryPath))
+                string[] folderNameParts = file.HdrDirectoryPath.Split('\\');
+                string folderName = "";
+                for (int i = 0; i < folderNameParts.Length; i++)
                 {
-                    folderDictionary[file.DirectoryPath].Add(file);
+                    if (!string.IsNullOrEmpty(folderNameParts[i]))
+                    {
+                        folderName += folderNameParts[i] + '\\';
+                        if (!folderDictionary.ContainsKey(folderName))
+                        {
+                            folderDictionary.Add(folderName, new List<HdrFile>());
+                        }
+                    }
+                }
+                if (folderDictionary.ContainsKey(file.HdrDirectoryPath))
+                {
+                    folderDictionary[file.HdrDirectoryPath].Add(file);
                 }
                 else
                 {
-                    folderDictionary.Add(file.DirectoryPath, new List<HdrFile>() {file});
+                    folderDictionary.Add(file.HdrDirectoryPath, new List<HdrFile>() {file});
                 }
             }
             IBuffer buffer = new ArrayBuffer();
@@ -131,7 +137,8 @@ namespace Arrowgene.Ez2Off.Data.Hdr
             HdrArchive archive = Read(source);
             foreach (HdrFile file in archive.Files)
             {
-                string directoryPath = Path.Combine(destination, file.DirectoryPath);
+                string directoryPath = Path.Combine(destination, file.HdrDirectoryPath);
+                directoryPath = NormalizePath(directoryPath);
                 Directory.CreateDirectory(directoryPath);
                 string filePath = Path.Combine(directoryPath, file.FileName);
                 WriteFile(file.Data, filePath);
@@ -162,8 +169,8 @@ namespace Arrowgene.Ez2Off.Data.Hdr
             {
                 throw new Exception(String.Format("Destination has invalid extension of '{0}', please use '.tro' or '.dat'", ext));
             }
-            List<HdrFile> files = ReadDirectory(source);
-            HdrArchive archive = new HdrArchive(files, header);
+            List<HdrFile> hdrFiles = ReadDirectory(source);
+            HdrArchive archive = new HdrArchive(hdrFiles, header);
             Write(archive, destination);
         }
 
@@ -229,26 +236,64 @@ namespace Arrowgene.Ez2Off.Data.Hdr
         {
             List<HdrFile> hdrFiles = new List<HdrFile>();
             DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
-            ReadDirectory(directoryInfo, hdrFiles);
+            ReadDirectory(directoryInfo, directoryInfo, hdrFiles);
             return hdrFiles;
         }
 
-        private void ReadDirectory(DirectoryInfo directoryInfo, List<HdrFile> hdrFiles)
+        private int ReadDirectory(DirectoryInfo rootDirectoryInfo, DirectoryInfo directoryInfo, List<HdrFile> hdrFiles)
         {
+            int count = 0;
             foreach (FileInfo fileInfo in directoryInfo.GetFiles())
             {
+                string directoryPath = fileInfo.DirectoryName.Replace(rootDirectoryInfo.FullName, "");
+                directoryPath = OsToHdrPath(directoryPath);
+                string fullPath = directoryPath + fileInfo.Name;
                 HdrFile hdrFile = new HdrFile();
                 hdrFile.Data = ReadFile(fileInfo.FullName);
                 hdrFile.FileName = fileInfo.Name;
-                hdrFile.DirectoryPath = fileInfo.DirectoryName;
                 hdrFile.FileExtension = fileInfo.Extension;
-                hdrFile.FullPath = fileInfo.FullName;
+                hdrFile.HdrDirectoryPath = directoryPath;
+                hdrFile.HdrFullPath = fullPath;
                 hdrFiles.Add(hdrFile);
             }
             foreach (DirectoryInfo subDirectoryInfo in directoryInfo.GetDirectories())
             {
-                ReadDirectory(subDirectoryInfo, hdrFiles);
+                count += ReadDirectory(rootDirectoryInfo, subDirectoryInfo, hdrFiles);
             }
+            return ++count;
+        }
+
+        private string OsToHdrPath(string path)
+        {
+            if (!string.IsNullOrEmpty(path))
+            {
+                path = path.Replace('/', '\\');
+                if (path[0] == '\\')
+                {
+                    path = path.Substring(1);
+                }
+                if (path[path.Length - 1] != '\\')
+                {
+                    path = path + '\\';
+                }
+            }
+            return path;
+        }
+
+        private string NormalizePath(string path)
+        {
+            string result = "";
+            if (!string.IsNullOrEmpty(path))
+            {
+                path = path.Replace('\\', '/');
+                string[] parts = path.Split('/');
+
+                foreach (string part in parts)
+                {
+                    result = Path.Combine(result, part);
+                }
+            }
+            return result;
         }
 
         private byte[] ReadFile(string source)
