@@ -15,9 +15,16 @@ namespace Arrowgene.Ez2Off.Data.Hdr
         private const int DateSize = 20;
         private const string DateFormat = "yyyy-MM-dd HH:mm:ss";
 
+        private static readonly List<string> IgnoreFiles = new List<string>()
+        {
+            ".ds_store"
+        };
+
         public HdrFormat()
         {
         }
+
+        public event EventHandler<HdrProgressEventArgs> ProgressChanged;
 
         public HdrArchive Read(string sourcePath)
         {
@@ -45,8 +52,8 @@ namespace Arrowgene.Ez2Off.Data.Hdr
                             case ".pts":
                                 // PTS-Files are PNG files with the first 4byte beeing lengt of the data.
                                 // We already know the length from the index.
-                                offset += 4;
-                                lenght -= 4;
+                                // offset += 4;
+                                // lenght -= 4;
                                 break;
                         }
                     }
@@ -69,6 +76,7 @@ namespace Arrowgene.Ez2Off.Data.Hdr
         public void Write(HdrArchive archive, string destinationPath)
         {
             Dictionary<string, List<HdrFile>> folderDictionary = new Dictionary<string, List<HdrFile>>();
+            List<string> orderedKeys = new List<string>();
             foreach (HdrFile file in archive.Files)
             {
                 string[] folderNameParts = file.HdrDirectoryPath.Split('\\');
@@ -81,6 +89,7 @@ namespace Arrowgene.Ez2Off.Data.Hdr
                         if (!folderDictionary.ContainsKey(folderName))
                         {
                             folderDictionary.Add(folderName, new List<HdrFile>());
+                            orderedKeys.Add(folderName);
                         }
                     }
                 }
@@ -91,21 +100,33 @@ namespace Arrowgene.Ez2Off.Data.Hdr
                 else
                 {
                     folderDictionary.Add(file.HdrDirectoryPath, new List<HdrFile>() {file});
+                    orderedKeys.Add(folderName);
                 }
             }
-            IBuffer buffer = new ArrayBuffer();
+            orderedKeys.Sort((s1, s2) => string.Compare(s1, s2, StringComparison.InvariantCultureIgnoreCase));
+            IBuffer buffer = new StreamBuffer();
+            int totalFiles = archive.Files.Count;
+            int currentFile = 0;
             int folderIndexStart = HeaderSize;
             int fileIndexStart = folderIndexStart + folderDictionary.Count * IndexBlockSize;
-            int contentStart = IndexBlockSize * archive.Files.Count * folderDictionary.Count;
+            int contentStart = fileIndexStart + IndexBlockSize * archive.Files.Count;
             int currentFolderIndex = 0;
             int currentFileIndex = 0;
-            foreach (string key in folderDictionary.Keys)
+            int currentContentLength = 0;
+            foreach (string key in orderedKeys)
             {
                 HdrIndex folderIndex = new HdrIndex();
                 folderIndex.Name = key;
                 folderIndex.Length = folderDictionary[key].Count;
                 folderIndex.Position = folderIndexStart + currentFolderIndex;
-                folderIndex.Offset = fileIndexStart + currentFileIndex;
+                if (folderIndex.Length > 0)
+                {
+                    folderIndex.Offset = fileIndexStart + currentFileIndex;
+                }
+                else
+                {
+                    folderIndex.Offset = 0;
+                }
                 WriteIndex(buffer, folderIndex);
                 foreach (HdrFile file in folderDictionary[key])
                 {
@@ -113,12 +134,15 @@ namespace Arrowgene.Ez2Off.Data.Hdr
                     fileIndex.Name = file.FileName;
                     fileIndex.Length = file.Data.Length;
                     fileIndex.Position = fileIndexStart + currentFileIndex;
-                    fileIndex.Offset = buffer.Position;
+                    fileIndex.Offset = contentStart + currentContentLength;
                     WriteIndex(buffer, fileIndex);
-                    buffer.WriteBytes(file.Data, 0, contentStart, file.Data.Length);
+                    buffer.WriteBytes(file.Data, 0, fileIndex.Offset, fileIndex.Length);
                     currentFileIndex += IndexBlockSize;
+                    currentContentLength += file.Data.Length;
+                    currentFile++;
                 }
                 currentFolderIndex += IndexBlockSize;
+                OnProgressChanged(totalFiles, currentFile);
             }
             HdrHeader header = new HdrHeader();
             header.ContentOffset = contentStart;
@@ -137,8 +161,8 @@ namespace Arrowgene.Ez2Off.Data.Hdr
             HdrArchive archive = Read(source);
             foreach (HdrFile file in archive.Files)
             {
-                string directoryPath = Path.Combine(destination, file.HdrDirectoryPath);
-                directoryPath = NormalizePath(directoryPath);
+                string directory = HdrToOsPath(file.HdrDirectoryPath);
+                string directoryPath = Path.Combine(destination, directory);
                 Directory.CreateDirectory(directoryPath);
                 string filePath = Path.Combine(directoryPath, file.FileName);
                 WriteFile(file.Data, filePath);
@@ -227,7 +251,7 @@ namespace Arrowgene.Ez2Off.Data.Hdr
         {
             buffer.Position = index.Position;
             buffer.WriteCString(index.Name);
-            buffer.Position += 260;
+            buffer.Position = index.Position + 260;
             buffer.WriteInt32(index.Length);
             buffer.WriteInt32(index.Offset);
         }
@@ -245,16 +269,19 @@ namespace Arrowgene.Ez2Off.Data.Hdr
             int count = 0;
             foreach (FileInfo fileInfo in directoryInfo.GetFiles())
             {
-                string directoryPath = fileInfo.DirectoryName.Replace(rootDirectoryInfo.FullName, "");
-                directoryPath = OsToHdrPath(directoryPath);
-                string fullPath = directoryPath + fileInfo.Name;
-                HdrFile hdrFile = new HdrFile();
-                hdrFile.Data = ReadFile(fileInfo.FullName);
-                hdrFile.FileName = fileInfo.Name;
-                hdrFile.FileExtension = fileInfo.Extension;
-                hdrFile.HdrDirectoryPath = directoryPath;
-                hdrFile.HdrFullPath = fullPath;
-                hdrFiles.Add(hdrFile);
+                if (!IgnoreFiles.Contains(fileInfo.Name.ToLowerInvariant()))
+                {
+                    string directoryPath = fileInfo.DirectoryName.Replace(rootDirectoryInfo.FullName, "");
+                    directoryPath = OsToHdrPath(directoryPath);
+                    string fullPath = directoryPath + fileInfo.Name;
+                    HdrFile hdrFile = new HdrFile();
+                    hdrFile.Data = ReadFile(fileInfo.FullName);
+                    hdrFile.FileName = fileInfo.Name;
+                    hdrFile.FileExtension = fileInfo.Extension;
+                    hdrFile.HdrDirectoryPath = directoryPath;
+                    hdrFile.HdrFullPath = fullPath;
+                    hdrFiles.Add(hdrFile);
+                }
             }
             foreach (DirectoryInfo subDirectoryInfo in directoryInfo.GetDirectories())
             {
@@ -280,7 +307,7 @@ namespace Arrowgene.Ez2Off.Data.Hdr
             return path;
         }
 
-        private string NormalizePath(string path)
+        private string HdrToOsPath(string path)
         {
             string result = "";
             if (!string.IsNullOrEmpty(path))
@@ -294,6 +321,16 @@ namespace Arrowgene.Ez2Off.Data.Hdr
                 }
             }
             return result;
+        }
+
+        private void OnProgressChanged(int total, int current)
+        {
+            EventHandler<HdrProgressEventArgs> progressChanged = ProgressChanged;
+            if (progressChanged != null)
+            {
+                HdrProgressEventArgs hdrProgressEventArgs = new HdrProgressEventArgs(total, current);
+                progressChanged(this, hdrProgressEventArgs);
+            }
         }
 
         private byte[] ReadFile(string source)
