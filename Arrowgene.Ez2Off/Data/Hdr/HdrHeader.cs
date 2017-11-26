@@ -10,7 +10,8 @@ namespace Arrowgene.Ez2Off.Data.Hdr
             header.Format = HdrFormat.Hdr;
             header.Created = null;
             header.Unknown0 = 1;
-            header.Unknown1 = 20;
+            header.IndexOffset = 20;
+            header.ArchiveType = HdrArchiveType.Tro;
             return header;
         }
 
@@ -20,15 +21,17 @@ namespace Arrowgene.Ez2Off.Data.Hdr
             header.Format = HdrFormat.Hdr;
             header.Created = DateTime.Now;
             header.Unknown0 = 1;
-            header.Unknown1 = 40;
+            header.IndexOffset = 40;
+            header.ArchiveType = HdrArchiveType.Dat;
             return header;
         }
-
+        
+        public HdrArchiveType ArchiveType { get; set; }
         public DateTime? Created { get; set; }
         public string Format { get; set; }
         public int Unknown0 { get; set; }
         public int ContentOffset { get; set; }
         public int FolderCount { get; set; }
-        public int Unknown1 { get; set; }
+        public int IndexOffset { get; set; }
     }
 }

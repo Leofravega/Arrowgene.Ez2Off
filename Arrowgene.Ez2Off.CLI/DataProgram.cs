@@ -33,6 +33,7 @@ namespace Arrowgene.Ez2Off.CLI
                 Help();
                 return 1;
             }
+            Console.WriteLine("Completed");
             return 0;
         }
 
