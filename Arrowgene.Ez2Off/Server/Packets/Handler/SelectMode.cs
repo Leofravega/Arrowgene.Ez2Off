@@ -22,7 +22,7 @@ namespace Arrowgene.Ez2Off.Server.Packets.Handler
         {
             ModeType mode = (ModeType) packet.Data.ReadByte();
 
-            IBuffer response = Provider.NewBuffer();
+            IBuffer response = EzServer.Buffer.Provide();
 
             response.WriteByte(0);
 

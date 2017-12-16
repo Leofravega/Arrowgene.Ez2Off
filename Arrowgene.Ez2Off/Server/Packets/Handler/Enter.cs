@@ -14,7 +14,7 @@ namespace Arrowgene.Ez2Off.Server.Packets.Handler
         public override void Handle(EzClient client, EzPacket packet)
         {
             packet.Data.ReadByte();
-            IBuffer response = Provider.NewBuffer();
+            IBuffer response = EzServer.Buffer.Provide();
             response.WriteByte(1);
             response.WriteByte(0);
             response.WriteByte(0x10);

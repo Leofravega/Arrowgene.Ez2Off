@@ -9,14 +9,12 @@ namespace Arrowgene.Ez2Off.Server.Packets
     public abstract class EzHandler
     {
         protected EzServer _server;
-        protected ILogger _logger;
-        protected EzPacketLogger _packetLogger;
+        protected EzLogger _logger;
 
         public EzHandler(EzServer server)
         {
             _server = server;
-            _logger = LogProvider.GetLogger(this);
-            _packetLogger = Provider.GetPacketLogger();
+            _logger = LogProvider<EzLogger>.GetLogger(this);
         }
 
         public abstract int Id { get; }
@@ -26,7 +24,7 @@ namespace Arrowgene.Ez2Off.Server.Packets
 
         protected void Send(EzClient client, EzPacket packet)
         {
-            // PacketLogger.LogOutgoingPacket(client, packet);
+            _logger.LogOutgoingPacket(client, packet);
             client.Send(packet);
         }
 

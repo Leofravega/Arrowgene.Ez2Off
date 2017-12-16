@@ -1,4 +1,5 @@
-﻿using Arrowgene.Services.Buffers;
+﻿using Arrowgene.Ez2Off.Server.Log;
+using Arrowgene.Services.Buffers;
 using Arrowgene.Services.Logging;
 
 namespace Arrowgene.Ez2Off.Server.Packets
@@ -14,12 +15,12 @@ namespace Arrowgene.Ez2Off.Server.Packets
         public EzPacketBuilder()
         {
             _isFinished = true;
-            _logger = LogProvider.GetLogger(this);
+            _logger = LogProvider<EzLogger>.GetLogger(this);
         }
 
         public EzPacket Read(byte[] data)
         {
-            IBuffer buffer = Provider.NewBuffer(data);
+            IBuffer buffer = EzServer.Buffer.Provide(data);
             EzPacket packet = null;
             if (_isFinished)
             {
@@ -72,7 +73,7 @@ namespace Arrowgene.Ez2Off.Server.Packets
 
         public byte[] Write(EzPacket packet)
         {
-            IBuffer data = Provider.NewBuffer();
+            IBuffer data = EzServer.Buffer.Provide();
             data.WriteInt16(packet.Id);
             data.WriteInt32(packet.Data.Size);
             data.WriteByte(0);

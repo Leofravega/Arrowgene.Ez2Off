@@ -15,7 +15,7 @@ namespace Arrowgene.Ez2Off.Server.Packets.Handler
         {
             string characterName = packet.Data.ReadCString();
             _logger.Debug(characterName);
-            IBuffer response = Provider.NewBuffer();
+            IBuffer response = EzServer.Buffer.Provide();
             response.WriteString(characterName);
             response.WriteByte(0);
             Send(client, 3, response);

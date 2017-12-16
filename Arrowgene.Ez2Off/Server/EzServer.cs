@@ -1,33 +1,34 @@
 ﻿using System.Collections.Generic;
-using System.Net;
 using Arrowgene.Ez2Off.Server.Client;
+using Arrowgene.Ez2Off.Server.Log;
 using Arrowgene.Ez2Off.Server.Packets;
 using Arrowgene.Ez2Off.Server.Packets.Handler;
+using Arrowgene.Services.Buffers;
 using Arrowgene.Services.Logging;
-using Arrowgene.Services.Network.Tcp.Server;
-using Arrowgene.Services.Network.Tcp.Server.AsyncEvent;
-using Arrowgene.Services.Network.Tcp.Server.EventConsumer.EventHandler;
+using Arrowgene.Services.Networking.Tcp.Consumer.EventHandler;
+using Arrowgene.Services.Networking.Tcp.Server.AsyncEvent;
 
 namespace Arrowgene.Ez2Off.Server
 {
     public class EzServer
     {
-        private readonly ITcpServer _server;
+        public static IBufferProvider Buffer = new StreamBuffer();
+
+        private readonly AsyncEventServer _server;
         private readonly Dictionary<int, EzHandler> _handlers;
-        private ILogger _logger;
+        private EzLogger _logger;
 
-        public EzServer(IPAddress ip, int port)
+        public EzServer(EzServerConfig config)
         {
-            _logger = LogProvider.GetLogger(this);
-
+            _logger = LogProvider<EzLogger>.GetLogger(this);
+            _logger.Configure(config);
             EventHandlerConsumer consumer = new EventHandlerConsumer();
             consumer.ReceivedPacket += Svr_ReceivedPacket;
             consumer.ClientConnected += Svr_ClientConnected;
             consumer.ClientDisconnected += Svr_ClientDisconnected;
-
-            _server = new AsyncEventServer(ip, port, consumer);
+            _server = new AsyncEventServer(config.IpAddress, config.Port, consumer);
+            _server.Configure(config);
             _handlers = new Dictionary<int, EzHandler>();
-
             Clients = new EzClientList();
         }
 
@@ -63,12 +64,13 @@ namespace Arrowgene.Ez2Off.Server
             {
                 if (_handlers.ContainsKey(packet.Id))
                 {
-                    //packetLogger.LogIncomingPacket(client, request);
+                    _logger.LogIncomingPacket(client, packet);
+                    packet.Data.SetPositionStart();
                     _handlers[packet.Id].Handle(client, packet);
                 }
                 else
                 {
-                    //packetLogger.LogUnknownOutgoingPacket(client, request);
+                    _logger.LogUnknownOutgoingPacket(client, packet);
                 }
             }
         }

@@ -8,11 +8,11 @@ namespace Arrowgene.Ez2Off.Server.Log
 {
     public class EzLogPacket : EzPacket
     {
-        public EzLogPacket(EzClient client, EzPacket ezPacket, EzLogPacketType packetType) : base(ezPacket.Id, Provider.NewBuffer(ezPacket.Data.GetAllBytes()))
+        public EzLogPacket(EzClient client, EzPacket ezPacket, EzLogPacketType packetType) : base(ezPacket.Id, EzServer.Buffer.Provide(ezPacket.Data.GetAllBytes()))
         {
             PacketType = packetType;
             TimeStamp = DateTime.UtcNow;
-            Buffer = Provider.NewBuffer();
+            Buffer = EzServer.Buffer.Provide();
             Buffer.WriteInt16(ezPacket.Id);
             Buffer.WriteInt32(ezPacket.Data.Size);
             Buffer.WriteByte(0);
@@ -25,23 +25,26 @@ namespace Arrowgene.Ez2Off.Server.Log
 
         public string Hex
         {
-            get { return BitConverter.ToString(Buffer.GetAllBytes()); }
+            
+            get { return Buffer.ToHexString('-'); }
         }
 
-        public string UTF8
+        public string ASCII
         {
-            get { return Encoding.UTF8.GetString(Buffer.GetAllBytes()); }
+            get { return Buffer.ToAsciiString(true); }
         }
 
         public IBuffer Buffer { get; private set; }
 
-        public override string ToString()
+        public string ToLogText()
         {
-            String log = "----------";
+            String log = "Packet Log";
+            log += Environment.NewLine;
+            log +=   "----------";
             log += Environment.NewLine;
             log += string.Format("[{0:HH:mm:ss}][Typ:{1}][Id:{2}][Len:{3}]", TimeStamp, PacketType, Id, Buffer.Size);
             log += Environment.NewLine;
-            log += "UTF8:" + UTF8;
+            log += "ASCII:" + ASCII;
             log += Environment.NewLine;
             log += "HEX:" + Hex;
             log += Environment.NewLine;

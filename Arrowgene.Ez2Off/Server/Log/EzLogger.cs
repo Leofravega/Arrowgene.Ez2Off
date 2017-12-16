@@ -5,55 +5,64 @@ using Arrowgene.Services.Logging;
 
 namespace Arrowgene.Ez2Off.Server.Log
 {
-    public class EzPacketLogger
+    public class EzLogger : Logger
     {
-
-        private ILogger _logger;
-        
-        public EzPacketLogger()
-        {
-            _logger = LogProvider.GetLogger(this);
-            LogUnknownIncomingPackets = true;
-            LogOutgoingPackets = true;
-            LogIncomingPackets = true;
-        }
-
-        public bool LogUnknownIncomingPackets { get; set; }
-        public bool LogOutgoingPackets { get; set; }
-        public bool LogIncomingPackets { get; set; }
+        private bool _logUnknownIncomingPackets;
+        private bool _logOutgoingPackets;
+        private bool _logIncomingPackets;
 
         public event EventHandler<EzPacketLoggedEventArgs> EzPacketLogged;
 
+        public EzLogger() : this(null)
+        {
+        }
+
+        public EzLogger(string identity, string zone = null) : base(identity, zone)
+        {
+        }
+
+        public void Configure(EzServerConfig config)
+        {
+            _logUnknownIncomingPackets = config.LogUnknownIncomingPackets;
+            _logOutgoingPackets = config.LogOutgoingPackets;
+            _logIncomingPackets = config.LogIncomingPackets;
+        }
+
+        public override ILogger Produce(string identity, string zone = null)
+        {
+            return new EzLogger(identity, zone);
+        }
+
         public void LogIncomingPacket(EzClient client, EzPacket packet)
         {
-            if (LogIncomingPackets)
+            if (_logIncomingPackets)
             {
                 EzLogPacket logPacket = new EzLogPacket(client, packet, EzLogPacketType.In);
-                Handle(logPacket);
+                Packet(logPacket);
             }
         }
 
         public void LogUnknownOutgoingPacket(EzClient client, EzPacket packet)
         {
-            if (LogUnknownIncomingPackets)
+            if (_logUnknownIncomingPackets)
             {
                 EzLogPacket logPacket = new EzLogPacket(client, packet, EzLogPacketType.In);
-                Handle(logPacket);
+                Packet(logPacket);
             }
         }
 
         public void LogOutgoingPacket(EzClient client, EzPacket packet)
         {
-            if (LogOutgoingPackets)
+            if (_logOutgoingPackets)
             {
                 EzLogPacket logPacket = new EzLogPacket(client, packet, EzLogPacketType.Out);
-                Handle(logPacket);
+                Packet(logPacket);
             }
         }
 
-        private void Handle(EzLogPacket packet)
+        public void Packet(EzLogPacket packet)
         {
-            _logger.Info(packet.ToString());
+            Write(LogLevel.Info, packet.ToLogText());
             OnEzPacketLogged(packet);
         }
 

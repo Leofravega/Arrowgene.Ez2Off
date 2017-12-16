@@ -1,6 +1,6 @@
 # https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-publish?tabs=netcore2x
 
-VERSION="1.0"
+VERSION="1.1"
 
 mkdir ./release
 for RUNTIME in win-x86 win-x64 linux-x64 osx-x64; do

@@ -15,13 +15,13 @@ namespace Arrowgene.Ez2Off.Server.Packets.Handler
         {
             packet.Data.ReadByte();
 
-            IBuffer response = Provider.NewBuffer();
+            IBuffer response = EzServer.Buffer.Provide();
             response.WriteByte(1);
             response.WriteByte(0);
             response.WriteByte(0);
             response.WriteByte(0x14);
 
-            IBuffer player = Provider.NewBuffer();
+            IBuffer player = EzServer.Buffer.Provide();
             player.WriteByte(1);
             player.WriteString(client.Name);
             player.WriteByte(0);

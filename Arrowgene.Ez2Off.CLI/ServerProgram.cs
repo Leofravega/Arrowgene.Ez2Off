@@ -11,7 +11,7 @@ namespace Arrowgene.Ez2Off.CLI
 
         public static int EntryPoint(string[] args)
         {
-            LogProvider.LogWrite += LogProviderOnLogWrite;
+            LogProvider.GlobalLogWrite += LogProviderOnLogWrite;
             Console.Title = "EzServer";
             IPAddress ip = IPAddress.Loopback;
             int port = 9350;
@@ -64,7 +64,16 @@ namespace Arrowgene.Ez2Off.CLI
 
         public ServerProgram(IPAddress ip, int port)
         {
-            server = new EzServer(ip, port);
+            EzServerConfig config = new EzServerConfig();
+            config.IpAddress = ip;
+            config.Port = port;
+            server = new EzServer(config);
+        }
+
+        private EzServerConfig ReadConfig()
+        {
+            // ToDo read config from file
+            return new EzServerConfig();
         }
 
         private int Run()

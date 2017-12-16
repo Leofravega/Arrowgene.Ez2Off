@@ -1,5 +1,5 @@
 ﻿using Arrowgene.Ez2Off.Server.Packets;
-using Arrowgene.Services.Network.Tcp;
+using Arrowgene.Services.Networking.Tcp;
 
 namespace Arrowgene.Ez2Off.Server.Client
 {
