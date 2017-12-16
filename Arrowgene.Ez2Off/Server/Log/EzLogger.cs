@@ -7,9 +7,9 @@ namespace Arrowgene.Ez2Off.Server.Log
 {
     public class EzLogger : Logger
     {
-        private bool _logUnknownIncomingPackets;
-        private bool _logOutgoingPackets;
-        private bool _logIncomingPackets;
+        private static bool _logUnknownIncomingPackets;
+        private static bool _logOutgoingPackets;
+        private static bool _logIncomingPackets;
 
         public event EventHandler<EzPacketLoggedEventArgs> EzPacketLogged;
 

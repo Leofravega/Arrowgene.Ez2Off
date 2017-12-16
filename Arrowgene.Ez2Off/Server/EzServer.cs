@@ -54,6 +54,8 @@ namespace Arrowgene.Ez2Off.Server
             AddHandler(new CreateAccount(this));
             AddHandler(new Enter(this));
             AddHandler(new SinglePlay(this));
+            AddHandler(new BackButton(this));
+            AddHandler(new StartGame(this));
         }
 
         private void Svr_ReceivedPacket(object sender, ReceivedPacketEventArgs e)
