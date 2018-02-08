@@ -71,6 +71,9 @@ namespace Arrowgene.Ez2Off.Data.Hdr
                     file.HdrDirectoryPath = folderIndex.Name;
                     file.HdrFullPath = folderIndex.Name + fileIndex.Name;
                     file.Data = buffer.GetBytes(offset, lenght);
+                    file.Offset = offset;
+                    file.Length = lenght;
+                    file.Extension = ext;
                     files.Add(file);
                     currentFile++;
                 }
@@ -166,6 +169,20 @@ namespace Arrowgene.Ez2Off.Data.Hdr
             WriteFile(buffer.GetAllBytes(), destinationPath);
         }
 
+        public void ExtractOffset(string source, string destination, int offset, int length)
+        {
+            offset =101798157;
+            length = 4096;
+            HdrArchive archive = Read(source);
+            foreach (HdrFile hdrFile in archive.Files)
+            {
+                if (hdrFile.Offset == offset)
+                {
+                    Console.WriteLine(hdrFile.HdrFullPath);
+                }
+            }
+        }
+
         public void Extract(string source, string destination)
         {
             HdrArchive archive = Read(source);
@@ -183,7 +200,8 @@ namespace Arrowgene.Ez2Off.Data.Hdr
         {
             if (!Path.HasExtension(destination))
             {
-                throw new Exception(String.Format("Destination '{0}' has no .ext, please use '.tro' or '.dat'", destination));
+                throw new Exception(String.Format("Destination '{0}' has no .ext, please use '.tro' or '.dat'",
+                    destination));
             }
             string ext = Path.GetExtension(destination).ToLower();
             HdrHeader header;
@@ -197,7 +215,8 @@ namespace Arrowgene.Ez2Off.Data.Hdr
             }
             else
             {
-                throw new Exception(String.Format("Destination has invalid extension of '{0}', please use '.tro' or '.dat'", ext));
+                throw new Exception(
+                    String.Format("Destination has invalid extension of '{0}', please use '.tro' or '.dat'", ext));
             }
             List<HdrFile> hdrFiles = ReadDirectory(source);
             HdrArchive archive = new HdrArchive(hdrFiles, header);
@@ -213,7 +232,8 @@ namespace Arrowgene.Ez2Off.Data.Hdr
                 header.Format = first;
                 header.Created = null;
             }
-            else if (DateTime.TryParseExact(first, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var created))
+            else if (DateTime.TryParseExact(first, DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None,
+                out var created))
             {
                 header.Created = created;
                 header.Format = buffer.ReadCString();

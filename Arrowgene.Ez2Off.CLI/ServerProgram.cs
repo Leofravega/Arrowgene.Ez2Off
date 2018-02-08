@@ -65,7 +65,7 @@ namespace Arrowgene.Ez2Off.CLI
         public ServerProgram(IPAddress ip, int port)
         {
             EzServerConfig config = new EzServerConfig();
-            config.IpAddress = ip;
+            config.IpAddress = IPAddress.Any;
             config.Port = port;
             server = new EzServer(config);
         }

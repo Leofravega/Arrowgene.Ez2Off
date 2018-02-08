@@ -20,6 +20,10 @@ namespace Arrowgene.Ez2Off.CLI
                 {
                     hdr.Extract(args[1], args[2]);
                 }
+                else if (args[0] == "offset" || args[0] == "o")
+                {
+                    hdr.ExtractOffset(args[1], args[2], int.Parse(args[3]), int.Parse(args[4]));
+                }
                 else
                 {
                     Console.WriteLine("Invalid actions use 'p' or 'e' or 'pack' or 'extract'");
@@ -39,7 +43,8 @@ namespace Arrowgene.Ez2Off.CLI
 
         private static void HdrOnProgressChanged(object sender, HdrProgressEventArgs hdrProgressEventArgs)
         {
-            Console.WriteLine(string.Format("Progress: {0}/{1}", hdrProgressEventArgs.Current, hdrProgressEventArgs.Total));
+            Console.WriteLine(string.Format("Progress: {0}/{1}", hdrProgressEventArgs.Current,
+                hdrProgressEventArgs.Total));
         }
 
         public static void Help()
