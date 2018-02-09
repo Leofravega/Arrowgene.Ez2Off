@@ -46,7 +46,7 @@ namespace Arrowgene.Ez2Off.Server.Log
         {
             if (_logUnknownIncomingPackets)
             {
-                EzLogPacket logPacket = new EzLogPacket(client, packet, EzLogPacketType.In);
+                EzLogPacket logPacket = new EzLogPacket(client, packet, EzLogPacketType.Out);
                 Packet(logPacket);
             }
         }

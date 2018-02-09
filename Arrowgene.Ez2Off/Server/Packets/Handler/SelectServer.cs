@@ -19,7 +19,7 @@ namespace Arrowgene.Ez2Off.Server.Packets.Handler
 
             response.WriteByte(0x24);
             response.WriteByte(0x86);
-            response.WriteString("127.000.00.001");
+            response.WriteString("127.0.0.1");
             response.WriteByte(0);
             response.WriteByte(0);
 

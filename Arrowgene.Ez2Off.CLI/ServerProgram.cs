@@ -33,7 +33,6 @@ namespace Arrowgene.Ez2Off.CLI
                     return 1;
                 }
             }
-            Console.WriteLine(string.Format("Using IPAddress:{0} and Port:{1}", ip, port));
             ServerProgram p = new ServerProgram(ip, port);
             return p.Run();
         }
@@ -52,10 +51,15 @@ namespace Arrowgene.Ez2Off.CLI
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
             }
-            if (logWriteEventArgs.Log.Zone == "EzPacketLogger")
+            if (logWriteEventArgs.Log.Text.Contains("[Typ:Out]"))
+            {
+                Console.ForegroundColor = ConsoleColor.Magenta;
+            }
+            if (logWriteEventArgs.Log.Text.Contains("[Typ:In]"))
             {
                 Console.ForegroundColor = ConsoleColor.Green;
             }
+            
             Console.WriteLine(logWriteEventArgs.Log);
             Console.ResetColor();
         }
@@ -65,7 +69,7 @@ namespace Arrowgene.Ez2Off.CLI
         public ServerProgram(IPAddress ip, int port)
         {
             EzServerConfig config = new EzServerConfig();
-            config.IpAddress = IPAddress.Any;
+            config.IpAddress = ip;
             config.Port = port;
             server = new EzServer(config);
         }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Sockets;
 using Arrowgene.Ez2Off.Server.Client;
 using Arrowgene.Ez2Off.Server.Log;
 using Arrowgene.Ez2Off.Server.Packets;
@@ -7,6 +9,7 @@ using Arrowgene.Services.Buffers;
 using Arrowgene.Services.Logging;
 using Arrowgene.Services.Networking.Tcp.Consumer.EventHandler;
 using Arrowgene.Services.Networking.Tcp.Server.AsyncEvent;
+using SelectMode = Arrowgene.Ez2Off.Server.Packets.Handler.SelectMode;
 
 namespace Arrowgene.Ez2Off.Server
 {
@@ -36,6 +39,7 @@ namespace Arrowgene.Ez2Off.Server
 
         public void Start()
         {
+            _logger.Info("Using IPAddress:{0} and Port:{1}", _server.IpAddress, _server.Port);
             LoadHandles();
             _logger.Info("Loaded {0} handles", _handlers.Count);
             _server.Start();
@@ -79,13 +83,16 @@ namespace Arrowgene.Ez2Off.Server
 
         private void Svr_ClientDisconnected(object sender, DisconnectedEventArgs e)
         {
-            Clients.RemoveClient(e.Socket);
+            EzClient client = Clients.GetClient(e.Socket);
+            Clients.RemoveClient(client);
+            _logger.Info("Client: {0} disconnected", client.Identity);
         }
 
         private void Svr_ClientConnected(object sender, ConnectedEventArgs e)
         {
             EzClient client = new EzClient(e.Socket);
             Clients.AddClient(client);
+            _logger.Info("Client: {0} connected", client.Identity);
         }
 
         private void AddHandler(EzHandler handler)

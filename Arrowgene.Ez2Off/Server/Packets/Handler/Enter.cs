@@ -17,7 +17,7 @@ namespace Arrowgene.Ez2Off.Server.Packets.Handler
             IBuffer response = EzServer.Buffer.Provide();
             response.WriteByte(1);
             response.WriteByte(0);
-            response.WriteByte(0x10);
+            response.WriteByte(0);
             response.WriteByte(0);
             response.WriteByte(0);
             response.WriteByte(0);
