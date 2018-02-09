@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
+﻿using System.Collections.Generic;
 using Arrowgene.Ez2Off.Server.Client;
 using Arrowgene.Ez2Off.Server.Log;
 using Arrowgene.Ez2Off.Server.Packets;
-using Arrowgene.Ez2Off.Server.Packets.Handler;
 using Arrowgene.Services.Buffers;
 using Arrowgene.Services.Logging;
 using Arrowgene.Services.Networking.Tcp.Consumer.EventHandler;
 using Arrowgene.Services.Networking.Tcp.Server.AsyncEvent;
-using SelectMode = Arrowgene.Ez2Off.Server.Packets.Handler.SelectMode;
 
 namespace Arrowgene.Ez2Off.Server
 {
-    public class EzServer
+    public abstract class EzServer
     {
         public static IBufferProvider Buffer = new StreamBuffer();
 
@@ -34,6 +30,8 @@ namespace Arrowgene.Ez2Off.Server
             _handlers = new Dictionary<int, EzHandler>();
             Clients = new EzClientList();
         }
+        
+        public abstract string Name { get; }
 
         public EzClientList Clients { get; }
 
@@ -50,16 +48,18 @@ namespace Arrowgene.Ez2Off.Server
             _server.Stop();
         }
 
-        private void LoadHandles()
+        protected abstract void LoadHandles();
+       
+        protected void AddHandler(EzHandler handler)
         {
-            AddHandler(new Login(this));
-            AddHandler(new SelectMode(this));
-            AddHandler(new SelectServer(this));
-            AddHandler(new CreateAccount(this));
-            AddHandler(new Enter(this));
-            AddHandler(new SinglePlay(this));
-            AddHandler(new BackButton(this));
-            AddHandler(new StartGame(this));
+            if (_handlers.ContainsKey(handler.Id))
+            {
+                _handlers[handler.Id] = handler;
+            }
+            else
+            {
+                _handlers.Add(handler.Id, handler);
+            }
         }
 
         private void Svr_ReceivedPacket(object sender, ReceivedPacketEventArgs e)
@@ -95,16 +95,5 @@ namespace Arrowgene.Ez2Off.Server
             _logger.Info("Client: {0} connected", client.Identity);
         }
 
-        private void AddHandler(EzHandler handler)
-        {
-            if (_handlers.ContainsKey(handler.Id))
-            {
-                _handlers[handler.Id] = handler;
-            }
-            else
-            {
-                _handlers.Add(handler.Id, handler);
-            }
-        }
     }
 }

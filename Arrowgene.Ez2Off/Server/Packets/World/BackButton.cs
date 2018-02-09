@@ -1,25 +1,23 @@
 ﻿using Arrowgene.Ez2Off.Server.Client;
 using Arrowgene.Services.Buffers;
 
-namespace Arrowgene.Ez2Off.Server.Packets.Handler
+namespace Arrowgene.Ez2Off.Server.Packets.World
 {
-    public class SelectServer : EzHandler
+    public class BackButton : EzHandler
     {
-        public SelectServer(EzServer server) : base(server)
+        public BackButton(EzServer server) : base(server)
         {
         }
 
-        public override int Id => 7;
+        public override int Id => 8;
 
         public override void Handle(EzClient client, EzPacket packet)
         {
-            int selectedServer = packet.Data.ReadByte();
-
             IBuffer response = EzServer.Buffer.Provide();
 
             response.WriteByte(0x24);
             response.WriteByte(0x86);
-            response.WriteString("127.0.0.1");
+            response.WriteString("127.000.000.001");
             response.WriteByte(0);
             response.WriteByte(0);
 

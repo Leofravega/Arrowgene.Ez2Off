@@ -1,4 +1,6 @@
-﻿namespace Arrowgene.Ez2Off.CLI
+﻿using System.IO;
+
+namespace Arrowgene.Ez2Off.CLI
 {
     using System;
 
@@ -23,6 +25,14 @@
             Help();
             Console.WriteLine("Exiting, invalid or no command provided.");
             return 0;
+        }
+
+        public static string Directory()
+        {
+            string path = System.Reflection.Assembly.GetEntryAssembly().CodeBase;
+            string directory = Path.GetDirectoryName(path);
+            Uri uri = new Uri(directory);
+            return uri.AbsolutePath;
         }
 
         private static void Help()

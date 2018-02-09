@@ -1,7 +1,7 @@
 ﻿using Arrowgene.Ez2Off.Server.Client;
 using Arrowgene.Services.Buffers;
 
-namespace Arrowgene.Ez2Off.Server.Packets.Handler
+namespace Arrowgene.Ez2Off.Server.Packets.World
 {
     public class StartGame : EzHandler
     {

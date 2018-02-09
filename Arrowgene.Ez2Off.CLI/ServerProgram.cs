@@ -1,5 +1,5 @@
 using System;
-using System.Net;
+using System.IO;
 using Arrowgene.Ez2Off.Server;
 using Arrowgene.Services.Logging;
 
@@ -13,27 +13,7 @@ namespace Arrowgene.Ez2Off.CLI
         {
             LogProvider.GlobalLogWrite += LogProviderOnLogWrite;
             Console.Title = "EzServer";
-            IPAddress ip = IPAddress.Loopback;
-            int port = 9350;
-            bool readParams = false;
-            if (args.Length >= 2)
-            {
-                if (IPAddress.TryParse(args[0], out IPAddress tmpIp))
-                {
-                    if (int.TryParse(args[1], out int tmpPort))
-                    {
-                        ip = tmpIp;
-                        port = tmpPort;
-                        readParams = true;
-                    }
-                }
-                if (!readParams)
-                {
-                    Console.WriteLine("Could not read provided parameters, use 'Ip Port' notation e.g. '127.0.0.1 13245'");
-                    return 1;
-                }
-            }
-            ServerProgram p = new ServerProgram(ip, port);
+            ServerProgram p = new ServerProgram();
             return p.Run();
         }
 
@@ -59,33 +39,47 @@ namespace Arrowgene.Ez2Off.CLI
             {
                 Console.ForegroundColor = ConsoleColor.Green;
             }
-            
+
             Console.WriteLine(logWriteEventArgs.Log);
             Console.ResetColor();
         }
 
-        private EzServer server;
+        private LoginServer _loginServer;
+        private WorldServer _worldServer;
 
-        public ServerProgram(IPAddress ip, int port)
+        public ServerProgram()
         {
-            EzServerConfig config = new EzServerConfig();
-            config.IpAddress = ip;
-            config.Port = port;
-            server = new EzServer(config);
+            EzServerConfig loginConfig = ReadConfig("login.json");
+            EzServerConfig worldConfig = ReadConfig("world.json");
+            _loginServer = new LoginServer(loginConfig);
+            _worldServer = new WorldServer(worldConfig);
         }
 
-        private EzServerConfig ReadConfig()
+        private EzServerConfig ReadConfig(string file)
         {
-            // ToDo read config from file
-            return new EzServerConfig();
+            EzServerConfig config;
+            string path = Path.Combine(Program.Directory(), file);
+            if (File.Exists(path))
+            {
+                string json = File.ReadAllText(path);
+                config = new EzServerConfig(json);
+            }
+            else
+            {
+                config = new EzServerConfig();
+                File.WriteAllText(path, config.ToJson());
+            }
+            return config;
         }
 
         private int Run()
         {
-            server.Start();
+            _loginServer.Start();
+            _worldServer.Start();
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
-            server.Stop();
+            _loginServer.Stop();
+            _worldServer.Stop();
             return ExitCodeOk;
         }
     }

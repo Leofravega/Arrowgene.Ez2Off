@@ -18,6 +18,7 @@ namespace Arrowgene.Ez2Off.Server.Packets
             _logger = LogProvider<EzLogger>.GetLogger(this);
         }
 
+        //TODO handle nagle, protect against OOM by defining a max packet size.
         public EzPacket Read(byte[] data)
         {
             IBuffer buffer = EzServer.Buffer.Provide(data);
@@ -38,19 +39,17 @@ namespace Arrowgene.Ez2Off.Server.Packets
                 else if (buffer.Size < desiredSize)
                 {
                     _currentId = id;
-                    _currentDesiredSize = size;
+                    _currentDesiredSize = desiredSize;
                     _isFinished = false;
                     _currentPacketBuffer = buffer;
                 }
                 else
                 {
-                    _logger.Error("Packet tells incorrect packet size.");
+                    _logger.Error("TODO");
                 }
             }
             else
             {
-                // Todo verify if it handles splitted packets
-
                 long dataSize = _currentPacketBuffer.Size + buffer.Size;
 
                 if (dataSize == _currentDesiredSize)
@@ -61,11 +60,12 @@ namespace Arrowgene.Ez2Off.Server.Packets
                 }
                 else if (dataSize < _currentDesiredSize)
                 {
+                    _currentPacketBuffer.SetPositionEnd();
                     _currentPacketBuffer.WriteBuffer(buffer);
                 }
                 else
                 {
-                    _logger.Error("Packet tells incorrect packet size. 1");
+                    _logger.Error("TODO1");
                 }
             }
             return packet;

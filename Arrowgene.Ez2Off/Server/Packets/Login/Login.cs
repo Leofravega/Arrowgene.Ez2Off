@@ -1,32 +1,29 @@
 ﻿using Arrowgene.Ez2Off.Server.Client;
 using Arrowgene.Services.Buffers;
 
-namespace Arrowgene.Ez2Off.Server.Packets.Handler
+namespace Arrowgene.Ez2Off.Server.Packets.Login
 {
-    public class CreateAccount : EzHandler
+    public class Login : EzHandler
     {
-        public CreateAccount(EzServer server) : base(server)
+        public Login(EzServer server) : base(server)
         {
         }
 
-        public override int Id => 2;
+        public override int Id => 0;
 
         public override void Handle(EzClient client, EzPacket packet)
         {
-            string characterName = packet.Data.ReadCString();
-            _logger.Debug(characterName);
+            packet.Data.ReadByte();
+
             IBuffer response = EzServer.Buffer.Provide();
-            response.WriteByte(255);
-            response.WriteByte(255);
-            response.WriteByte(255);
+            response.WriteByte(1);
             response.WriteByte(0);
-        //    Send(client, 2, response);
-        //    Send(client, 3, response);
-            
-            
-                IBuffer player = EzServer.Buffer.Provide();
+            response.WriteByte(0);
+            response.WriteByte(0x14);
+
+            IBuffer player = EzServer.Buffer.Provide();
           player.WriteByte(0x72);
-            player.WriteString(client.Name);
+      //      player.WriteString(client.Name);
             player.WriteByte(0);
             player.WriteByte(0x72);
             player.WriteByte(0x47);
@@ -118,7 +115,8 @@ namespace Arrowgene.Ez2Off.Server.Packets.Handler
             player.WriteByte(0);
 
 
-            Send(client, 2, player);
+            Send(client, 0, response);
+            Send(client, 1, player);
         }
     }
 }
