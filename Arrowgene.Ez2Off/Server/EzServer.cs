@@ -16,40 +16,55 @@ namespace Arrowgene.Ez2Off.Server
         private readonly AsyncEventServer _server;
         private readonly Dictionary<int, EzHandler> _handlers;
         private EzLogger _logger;
+        private bool _active;
 
         public EzServer(EzServerConfig config)
         {
-            _logger = LogProvider<EzLogger>.GetLogger(this);
-            _logger.Configure(config);
-            EventHandlerConsumer consumer = new EventHandlerConsumer();
-            consumer.ReceivedPacket += Svr_ReceivedPacket;
-            consumer.ClientConnected += Svr_ClientConnected;
-            consumer.ClientDisconnected += Svr_ClientDisconnected;
-            _server = new AsyncEventServer(config.IpAddress, config.Port, consumer);
-            _server.Configure(config);
-            _handlers = new Dictionary<int, EzHandler>();
-            Clients = new EzClientList();
+            Config = config;
+            _active = config.Active;
+            if (_active)
+            {
+                _logger = LogProvider<EzLogger>.GetLogger(this);
+                _logger.Configure(config);
+                EventHandlerConsumer consumer = new EventHandlerConsumer();
+                consumer.ReceivedPacket += Svr_ReceivedPacket;
+                consumer.ClientConnected += Svr_ClientConnected;
+                consumer.ClientDisconnected += Svr_ClientDisconnected;
+                _server = new AsyncEventServer(config.IpAddress, config.Port, consumer);
+                _server.Configure(config);
+                _handlers = new Dictionary<int, EzHandler>();
+                Clients = new EzClientList();
+            }
         }
-        
+
         public abstract string Name { get; }
 
         public EzClientList Clients { get; }
 
+        public EzServerConfig Config { get; }
+
         public void Start()
         {
-            _logger.Info("Using IPAddress:{0} and Port:{1}", _server.IpAddress, _server.Port);
-            LoadHandles();
-            _logger.Info("Loaded {0} handles", _handlers.Count);
-            _server.Start();
+            if (_active)
+            {
+                _logger.Info("Using IPAddress:{0} and Port:{1}", _server.IpAddress, _server.Port);
+                _handlers.Clear();
+                LoadHandles();
+                _logger.Info("Loaded {0} handles", _handlers.Count);
+                _server.Start();
+            }
         }
 
         public void Stop()
         {
-            _server.Stop();
+            if (_active)
+            {
+                _server.Stop();
+            }
         }
 
         protected abstract void LoadHandles();
-       
+
         protected void AddHandler(EzHandler handler)
         {
             if (_handlers.ContainsKey(handler.Id))
@@ -94,6 +109,5 @@ namespace Arrowgene.Ez2Off.Server
             Clients.AddClient(client);
             _logger.Info("Client: {0} connected", client.Identity);
         }
-
     }
 }

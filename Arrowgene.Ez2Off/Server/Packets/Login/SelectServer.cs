@@ -14,7 +14,7 @@ namespace Arrowgene.Ez2Off.Server.Packets.Login
         public override void Handle(EzClient client, EzPacket packet)
         {
             int selectedServer = packet.Data.ReadByte();
-            Buffer response = (Buffer)EzServer.Buffer.Provide();
+            IBuffer response = EzServer.Buffer.Provide();
             response.WriteInt16(9351, Endianness.Big); //World Server Port
             response.WriteString("127.0.0.1"); // World Server Ip
             response.WriteByte(0);

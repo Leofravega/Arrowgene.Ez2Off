@@ -67,6 +67,13 @@ namespace Arrowgene.Ez2Off.CLI
             else
             {
                 config = new EzServerConfig();
+                if (file == "login.json")
+                {
+                    config.Port = 9350;
+                } else if (file == "world.json")
+                {
+                    config.Port = 9351;
+                }
                 File.WriteAllText(path, config.ToJson());
             }
             return config;
@@ -82,5 +89,6 @@ namespace Arrowgene.Ez2Off.CLI
             _worldServer.Stop();
             return ExitCodeOk;
         }
+
     }
 }

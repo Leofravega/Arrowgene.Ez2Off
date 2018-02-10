@@ -22,6 +22,7 @@ namespace Arrowgene.Ez2Off.Server
             Backlog = 100;
             IpAddress = IPAddress.Any;
             Port = 9350;
+            Active = true;
         }
 
         public EzServerConfig(string json)
@@ -41,6 +42,7 @@ namespace Arrowgene.Ez2Off.Server
                 BufferSize = config.BufferSize;
                 MaxConnections = config.MaxConnections;
                 NumSimultaneouslyWriteOperations = config.NumSimultaneouslyWriteOperations;
+                Active = config.Active;
             }
             else
             {
@@ -48,6 +50,7 @@ namespace Arrowgene.Ez2Off.Server
             }
         }
 
+        public bool Active { get; set; }
         public bool LogUnknownIncomingPackets { get; set; }
         public bool LogOutgoingPackets { get; set; }
         public bool LogIncomingPackets { get; set; }
@@ -82,7 +85,11 @@ namespace Arrowgene.Ez2Off.Server
                 BufferSize = config.BufferSize;
                 MaxConnections = config.MaxConnections;
                 NumSimultaneouslyWriteOperations = config.NumSimultaneouslyWriteOperations;
+                Active = config.Active;
             }
+            
+            [DataMember]
+            public bool Active { get; set; }
 
             [DataMember]
             public int MaxConnections { get; set; }
