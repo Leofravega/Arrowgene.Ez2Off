@@ -30,9 +30,9 @@ namespace Arrowgene.Ez2Off.CLI
         public static string Directory()
         {
             string path = System.Reflection.Assembly.GetEntryAssembly().CodeBase;
-            string directory = Path.GetDirectoryName(path);
-            Uri uri = new Uri(directory);
-            return uri.AbsolutePath;
+            Uri uri = new Uri(path);
+            string directory = Path.GetDirectoryName(uri.LocalPath);
+            return directory;
         }
 
         private static void Help()
