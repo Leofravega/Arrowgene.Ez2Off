@@ -18,8 +18,8 @@ namespace Arrowgene.Ez2Off.Server
             LogIncomingPackets = true;
             MaxConnections = 100;
             NumSimultaneouslyWriteOperations = 100;
-            BufferSize = 100;
-            Backlog = 100;
+            BufferSize = 1024;
+            Backlog = 10;
             IpAddress = IPAddress.Any;
             Port = 9350;
             Active = true;

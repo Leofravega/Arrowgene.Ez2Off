@@ -13,65 +13,17 @@ namespace Arrowgene.Ez2Off.Server.Packets.World
 
         public override void Handle(EzClient client, EzPacket packet)
         {
-
-                  IBuffer player = EzServer.Buffer.Provide();
-            
-            player.WriteInt32(0);
-            player.WriteInt32(23);
-            player.WriteInt32(4);
-            player.WriteInt32(0);
-            player.WriteInt32(332);
-            player.WriteInt32(0);
-            player.WriteInt32(345);
-            player.WriteInt32(0);
-            player.WriteInt32(436);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0556);
-            player.WriteInt32(0);
-            player.WriteInt32(56);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-            player.WriteInt32(0);
-
- 
-            Send(client, 1, player);
+            packet.Data.ReadByte();
+            IBuffer response = EzServer.Buffer.Provide();
+            response.WriteByte(1);
+            response.WriteByte(0);
+            response.WriteByte(0x10);
+            response.WriteByte(0);
+            response.WriteByte(0);
+            response.WriteByte(0);
+            response.WriteByte(0);
+            response.WriteByte(0);
+            Send(client, 1, response);
         }
     }
 }
