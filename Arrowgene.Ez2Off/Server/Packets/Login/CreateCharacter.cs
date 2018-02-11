@@ -3,9 +3,9 @@ using Arrowgene.Services.Buffers;
 
 namespace Arrowgene.Ez2Off.Server.Packets.Login
 {
-    public class CreateAccount : EzHandler
+    public class CreateCharacter : EzHandler
     {
-        public CreateAccount(EzServer server) : base(server)
+        public CreateCharacter(EzServer server) : base(server)
         {
         }
 
@@ -15,6 +15,7 @@ namespace Arrowgene.Ez2Off.Server.Packets.Login
         {
             string characterName = packet.Data.ReadCString();
             _logger.Debug("Character Name: {0}", characterName);
+            client.Character = characterName;
 
             IBuffer response = EzServer.Buffer.Provide();
             response.WriteByte(0);

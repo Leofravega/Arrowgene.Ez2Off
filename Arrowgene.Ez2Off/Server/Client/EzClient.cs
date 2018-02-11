@@ -11,7 +11,7 @@ namespace Arrowgene.Ez2Off.Server.Client
         public EzClient(ITcpSocket clientSocket)
         {
             Socket = clientSocket;
-            Name = "Nothilvien";
+            Account = "Nothilvien";
             _packetBuilder = new EzPacketBuilder();
             if (Socket is AsyncEventClient)
             {
@@ -25,8 +25,16 @@ namespace Arrowgene.Ez2Off.Server.Client
         }
 
         public ITcpSocket Socket { get; }
-        public string Name { get; set; }
         public string Identity { get; }
+
+        public string Account { get; set; }
+        public string Character { get; set; }
+        public string Hash { get; set; }
+
+        /// <summary>
+        /// The IP the client specified via parameters when the first connection was initialized.
+        /// </summary>
+        public string StartupIp { get; set; }
 
         public EzPacket Read(byte[] data)
         {

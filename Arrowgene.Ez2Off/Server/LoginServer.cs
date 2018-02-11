@@ -34,7 +34,7 @@ namespace Arrowgene.Ez2Off.Server
             AddHandler(new Login(this));
             AddHandler(new SelectMode(this));
             AddHandler(new SelectServer(this));
-            AddHandler(new CreateAccount(this));
+            AddHandler(new CreateCharacter(this));
         }
     }
 }
