@@ -40,8 +40,8 @@ namespace Arrowgene.Ez2Off.CLI
             Console.WriteLine("Available Commands:");
             Console.WriteLine(Environment.NewLine);
             Console.WriteLine("---------- Server ----------");
-            Console.WriteLine("server [ip] [port]");
-            Console.WriteLine("server 127.0.0.1 9350");
+            Console.WriteLine("server");
+            Console.WriteLine("use login.json and world.json to configure server");
             Console.WriteLine(Environment.NewLine);
             Console.WriteLine("---------- Data ----------");
             Console.WriteLine("data [source] [destination]");

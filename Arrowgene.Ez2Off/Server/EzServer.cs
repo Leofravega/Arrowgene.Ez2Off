@@ -13,33 +13,22 @@ namespace Arrowgene.Ez2Off.Server
     {
         public static IBufferProvider Buffer = new StreamBuffer();
 
-        private readonly AsyncEventServer _server;
-        private readonly Dictionary<int, EzHandler> _handlers;
+        private AsyncEventServer _server;
+        private Dictionary<int, EzHandler> _handlers;
         private EzLogger _logger;
         private bool _active;
 
         public EzServer(EzServerConfig config)
         {
             Config = config;
+            _logger = LogProvider<EzLogger>.GetLogger(this);
+            _logger.Configure(Config);
             _active = config.Active;
-            if (_active)
-            {
-                _logger = LogProvider<EzLogger>.GetLogger(this);
-                _logger.Configure(config);
-                EventHandlerConsumer consumer = new EventHandlerConsumer();
-                consumer.ReceivedPacket += Svr_ReceivedPacket;
-                consumer.ClientConnected += Svr_ClientConnected;
-                consumer.ClientDisconnected += Svr_ClientDisconnected;
-                _server = new AsyncEventServer(config.IpAddress, config.Port, consumer);
-                _server.Configure(config);
-                _handlers = new Dictionary<int, EzHandler>();
-                Clients = new EzClientList();
-            }
         }
 
         public abstract string Name { get; }
 
-        public EzClientList Clients { get; }
+        public EzClientList Clients { get; private set; }
 
         public EzServerConfig Config { get; }
 
@@ -47,6 +36,8 @@ namespace Arrowgene.Ez2Off.Server
         {
             if (_active)
             {
+                _logger.Info("Initializing {0}", Name);
+                Initialize();
                 _logger.Info("Using IPAddress:{0} and Port:{1}", _server.IpAddress, _server.Port);
                 _handlers.Clear();
                 LoadHandles();
@@ -64,6 +55,18 @@ namespace Arrowgene.Ez2Off.Server
         }
 
         protected abstract void LoadHandles();
+
+        protected virtual void Initialize()
+        {
+            EventHandlerConsumer consumer = new EventHandlerConsumer();
+            consumer.ReceivedPacket += Svr_ReceivedPacket;
+            consumer.ClientConnected += Svr_ClientConnected;
+            consumer.ClientDisconnected += Svr_ClientDisconnected;
+            _server = new AsyncEventServer(Config.IpAddress, Config.Port, consumer);
+            _server.Configure(Config);
+            _handlers = new Dictionary<int, EzHandler>();
+            Clients = new EzClientList();
+        }
 
         protected void AddHandler(EzHandler handler)
         {

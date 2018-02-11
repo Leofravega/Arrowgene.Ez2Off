@@ -10,6 +10,11 @@ namespace Arrowgene.Ez2Off.Server
 
         public override string Name => "WorldServer";
 
+        protected override void Initialize()
+        {
+            base.Initialize();
+        }
+        
         protected override void LoadHandles()
         {
             AddHandler(new BackButton(this));
