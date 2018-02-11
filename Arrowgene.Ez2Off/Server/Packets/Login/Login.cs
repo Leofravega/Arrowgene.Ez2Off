@@ -1,7 +1,6 @@
 ﻿using System;
 using Arrowgene.Ez2Off.Server.Client;
 using Arrowgene.Services.Buffers;
-using Arrowgene.Services.Logging;
 
 namespace Arrowgene.Ez2Off.Server.Packets.Login
 {
@@ -22,20 +21,27 @@ namespace Arrowgene.Ez2Off.Server.Packets.Login
             byte[] paramPwHash = packet.Data.ReadBytes(17);
             byte[] unknown = packet.Data.ReadBytes(4);
             byte[] paramAccount = packet.Data.ReadBytes(35);
-
+            byte[] paramVersion = packet.Data.ReadBytes(4);
+            byte[] unknown1 = packet.Data.ReadBytes(7);
+            byte[] paramNumber = packet.Data.ReadBytes(4); // Last parameter, 4 numbers [0000 - 9999]
+            byte[] unknown2 = packet.Data.ReadBytes(16);
+            
+            
             byte[] paramIpDecrypt = DecryptParameter(paramIp, KeyIpParameter);
             byte[] paramPwHashDecrypt = DecryptParameter(paramPwHash, KeyHashParameter);
 
             string ip = ParameterToString(paramIpDecrypt);
             string pwHash = ParameterToString(paramPwHashDecrypt);
             string account = ParameterToString(paramAccount);
+            string number = ParameterToString(paramNumber);
+            string version = ParameterToString(paramVersion);
 
             client.Account = account;
             client.Hash = pwHash;
             client.StartupIp = ip;
 
-            _logger.Debug("Client {0} Login with parameters: IP:{1} Hash:{2} Acc:{3}", client.Identity,
-                client.StartupIp, client.Hash, client.Account);
+            _logger.Debug("Client {0} Login (params: IP:{1} Hash:{2} Acc:{3} Nr:{4}) Version:{5}", client.Identity,
+                client.StartupIp, client.Hash, client.Account, number, version);
 
             IBuffer response = EzServer.Buffer.Provide();
             response.WriteByte(1);
