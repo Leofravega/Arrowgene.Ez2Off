@@ -29,6 +29,8 @@ namespace Arrowgene.Ez2Off.Server.Packets.Login
             response.WriteByte(0);
             response.WriteByte(0x7);
             Send(client, 7, response);
+            
+            // TODO - client with disconnect now - we need to keep the object around till it pops up in worldserver or remove it after timeout
         }
     }
 }

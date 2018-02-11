@@ -17,6 +17,10 @@ namespace Arrowgene.Ez2Off.Server.Packets.World
             byte[] paramSessionDecrypt = Utils.DecryptParameter(paramSession, Utils.KeySessionParameter);
             string session = Utils.ParameterToString(paramSessionDecrypt);
             
+            _logger.Debug("Client {0} Entered World (Session:{2})", client.Identity, session);
+
+            // TODO - find client with session
+            
             IBuffer player = EzServer.Buffer.Provide();
             player.WriteByte(0);
             player.WriteByte(0);

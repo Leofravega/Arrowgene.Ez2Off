@@ -16,6 +16,9 @@ namespace Arrowgene.Ez2Off.Server.Packets.Login
 
         public override void Handle(EzClient client, EzPacket packet)
         {
+            // TODO - create an api endpoint to authenticate with pw against to retive a session id, then check here for valid session
+            
+            
             byte[] paramIp = packet.Data.ReadBytes(17);
             byte[] paramSession = packet.Data.ReadBytes(17);
             byte[] unknown = packet.Data.ReadBytes(4);
