@@ -1,4 +1,5 @@
-﻿using Arrowgene.Ez2Off.Server.Packets;
+﻿using Arrowgene.Ez2Off.Server.Models;
+using Arrowgene.Ez2Off.Server.Packets;
 using Arrowgene.Services.Networking.Tcp;
 using Arrowgene.Services.Networking.Tcp.Server.AsyncEvent;
 
@@ -29,7 +30,10 @@ namespace Arrowgene.Ez2Off.Server.Client
 
         public string Account { get; set; }
         public string Character { get; set; }
-        public string Hash { get; set; }
+        public string Session { get; set; }
+        public ModeType Mode { get; set; }
+        public Channel Channel  { get; set; }
+
 
         /// <summary>
         /// The IP the client specified via parameters when the first connection was initialized.

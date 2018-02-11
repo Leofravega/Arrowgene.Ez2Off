@@ -6,8 +6,7 @@ namespace Arrowgene.Ez2Off.Server.Packets.Login
 {
     public class Login : EzHandler
     {
-        public const byte KeyIpParameter = 0x24;
-        public const byte KeyHashParameter = 0x2A;
+
 
         public Login(EzServer server) : base(server)
         {
@@ -18,7 +17,7 @@ namespace Arrowgene.Ez2Off.Server.Packets.Login
         public override void Handle(EzClient client, EzPacket packet)
         {
             byte[] paramIp = packet.Data.ReadBytes(17);
-            byte[] paramPwHash = packet.Data.ReadBytes(17);
+            byte[] paramSession = packet.Data.ReadBytes(17);
             byte[] unknown = packet.Data.ReadBytes(4);
             byte[] paramAccount = packet.Data.ReadBytes(35);
             byte[] paramVersion = packet.Data.ReadBytes(4);
@@ -27,21 +26,21 @@ namespace Arrowgene.Ez2Off.Server.Packets.Login
             byte[] unknown2 = packet.Data.ReadBytes(16);
             
             
-            byte[] paramIpDecrypt = DecryptParameter(paramIp, KeyIpParameter);
-            byte[] paramPwHashDecrypt = DecryptParameter(paramPwHash, KeyHashParameter);
+            byte[] paramIpDecrypt = Utils.DecryptParameter(paramIp, Utils.KeyIpParameter);
+            byte[] paramSessionDecrypt = Utils.DecryptParameter(paramSession, Utils.KeySessionParameter);
 
-            string ip = ParameterToString(paramIpDecrypt);
-            string pwHash = ParameterToString(paramPwHashDecrypt);
-            string account = ParameterToString(paramAccount);
-            string number = ParameterToString(paramNumber);
-            string version = ParameterToString(paramVersion);
+            string ip = Utils.ParameterToString(paramIpDecrypt);
+            string session = Utils.ParameterToString(paramSessionDecrypt);
+            string account = Utils.ParameterToString(paramAccount);
+            string number = Utils.ParameterToString(paramNumber);
+            string version = Utils.ParameterToString(paramVersion);
 
             client.Account = account;
-            client.Hash = pwHash;
+            client.Session = session;
             client.StartupIp = ip;
 
-            _logger.Debug("Client {0} Login (params: IP:{1} Hash:{2} Acc:{3} Nr:{4}) Version:{5}", client.Identity,
-                client.StartupIp, client.Hash, client.Account, number, version);
+            _logger.Debug("Client {0} Login (params: IP:{1} Session:{2} Acc:{3} Nr:{4}) Version:{5}", client.Identity,
+                client.StartupIp, client.Session, client.Account, number, version);
 
             IBuffer response = EzServer.Buffer.Provide();
             response.WriteByte(1);
@@ -55,29 +54,6 @@ namespace Arrowgene.Ez2Off.Server.Packets.Login
             Send(client, 1, player);
         }
 
-        private byte[] DecryptParameter(byte[] parameter, byte key)
-        {
-            int lenght = parameter.Length;
-            byte[] result = new byte[lenght];
-            for (int i = 0; i < lenght; i++)
-            {
-                result[i] = (byte) (parameter[i] - key);
-            }
-            return result;
-        }
-
-        private string ParameterToString(byte[] parameter)
-        {
-            string response = string.Empty;
-            foreach (byte b in parameter)
-            {
-                if (b == 0)
-                {
-                    break;
-                }
-                response += (Char) b;
-            }
-            return response;
-        }
+   
     }
 }

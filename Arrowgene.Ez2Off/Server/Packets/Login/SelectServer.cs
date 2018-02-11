@@ -21,6 +21,7 @@ namespace Arrowgene.Ez2Off.Server.Packets.Login
             int selectedServer = packet.Data.ReadByte();
             _logger.Debug("Selected Server: {0}", selectedServer);
             Channel selecteChannel = _loginServer.Channels[selectedServer];
+            client.Channel = selecteChannel;
             IBuffer response = EzServer.Buffer.Provide();
             response.WriteInt16(selecteChannel.Port, Endianness.Big); //World Server Port
             response.WriteString(selecteChannel.IpAddress.ToString()); // World Server Ip

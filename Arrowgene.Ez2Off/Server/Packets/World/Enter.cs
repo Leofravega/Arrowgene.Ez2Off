@@ -13,7 +13,10 @@ namespace Arrowgene.Ez2Off.Server.Packets.World
 
         public override void Handle(EzClient client, EzPacket packet)
         {
-
+            byte[] paramSession = packet.Data.ReadBytes(17);
+            byte[] paramSessionDecrypt = Utils.DecryptParameter(paramSession, Utils.KeySessionParameter);
+            string session = Utils.ParameterToString(paramSessionDecrypt);
+            
             IBuffer player = EzServer.Buffer.Provide();
             player.WriteByte(0);
             player.WriteByte(0);

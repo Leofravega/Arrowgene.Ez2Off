@@ -7,12 +7,6 @@ namespace Arrowgene.Ez2Off.Server.Packets.Login
 {
     public class SelectMode : EzHandler
     {
-        public enum ModeType
-        {
-            RubyMix = 0,
-            StreetMix = 1,
-            ClubMix = 2
-        }
 
         private LoginServer _loginServer;
 
@@ -27,6 +21,7 @@ namespace Arrowgene.Ez2Off.Server.Packets.Login
         {
             ModeType mode = (ModeType) packet.Data.ReadByte();
             _logger.Debug("Selected Mode: {0}", mode);
+            client.Mode = mode;
 
             IBuffer response = EzServer.Buffer.Provide();
             List<Channel> channels = _loginServer.Channels;
@@ -36,7 +31,7 @@ namespace Arrowgene.Ez2Off.Server.Packets.Login
             foreach (Channel channel in channels)
             {
                 response.WriteByte(channel.Id); // Channel ID
-                response.WriteInt16(1000, Endianness.Big); // Load Indicator
+                response.WriteInt16(channel.Load, Endianness.Big); // Load Indicator
             }
             Send(client, 10, response);
         }

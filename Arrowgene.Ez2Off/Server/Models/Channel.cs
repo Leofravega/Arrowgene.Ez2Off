@@ -22,7 +22,7 @@ namespace Arrowgene.Ez2Off.Server.Models
         {
             Id = id;
             Port = 9351;
-            IpAddress = IPAddress.Any;
+            IpAddress = IPAddress.Loopback;
         }
     }
 }

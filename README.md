@@ -114,3 +114,14 @@ I Will update this tutorial once I know the exact steps
 
 After downloadig the game execute the 'start.cmd'-file.
 If the server is running the game should connect to the Server.
+
+
+### Startup Parameter
+
+osx ez.exe 127.0.0.1^|session^|account^|9999
+win ez.exe 127.0.0.1\|session\|account\|9999
+
+
+### TODO
+Login Flow:
+- Launcher with login -> authenticate against server API (create session) -> launch client with session
